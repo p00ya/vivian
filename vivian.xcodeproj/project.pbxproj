@@ -57,20 +57,6 @@
 			remoteGlobalIDString = 287F4E99247014C900640033;
 			remoteInfo = viv;
 		};
-		287F4EAD24701F9C00640033 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 287F4E36246F964B00640033 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 287F4E99247014C900640033;
-			remoteInfo = viva;
-		};
-		28B724EA250AE78D00325C2A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 287F4E36246F964B00640033 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 287F4E99247014C900640033;
-			remoteInfo = viv;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -347,7 +333,6 @@
 			);
 			dependencies = (
 				2878BDB62507966400CA3CA7 /* PBXTargetDependency */,
-				28B724EB250AE78D00325C2A /* PBXTargetDependency */,
 			);
 			name = vivtool;
 			packageProductDependencies = (
@@ -368,7 +353,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				287F4EAE24701F9C00640033 /* PBXTargetDependency */,
 			);
 			name = vivTests;
 			productName = vivaTests;
@@ -506,16 +490,6 @@
 			isa = PBXTargetDependency;
 			target = 287F4E99247014C900640033 /* viv */;
 			targetProxy = 2878BDB52507966400CA3CA7 /* PBXContainerItemProxy */;
-		};
-		287F4EAE24701F9C00640033 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 287F4E99247014C900640033 /* viv */;
-			targetProxy = 287F4EAD24701F9C00640033 /* PBXContainerItemProxy */;
-		};
-		28B724EB250AE78D00325C2A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 287F4E99247014C900640033 /* viv */;
-			targetProxy = 28B724EA250AE78D00325C2A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
