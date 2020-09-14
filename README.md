@@ -17,6 +17,14 @@ $ vivtool ls -l
 $ vivtool cp 0001.fit ./
 ```
 
+## Installation
+
+The `vivtool` command can be installed using [Homebrew](https://brew.sh/) with a custom tap:
+
+```sh
+brew install --HEAD p00ya/tap/vivtool
+```
+
 ## Technical Design
 
 ### Background
