@@ -23,6 +23,6 @@ version: ~> 1.0
 os: osx
 osx_image: xcode11.6
 language: objective-c
-xcode_project: Vivian.xcodeproj
+xcode_project: vivian.xcodeproj
 xcode_scheme: viv
 xcode_destination: platform=macOS
