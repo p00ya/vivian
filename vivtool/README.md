@@ -1,8 +1,8 @@
 #  vivtool
 
-`vivtool` is a macOS command-line utility for downloading .FIT activity logs from a Viiiiva without using the official 4iiii app.  It is part of the [Vivian project](https://github.com/p00ya/vivian), see the project page for user-oriented documentation.
+`vivtool` is a macOS command-line utility for downloading .FIT activity logs from a Viiiiva without using the official 4iiii app.
 
-This README is targeted at developers.
+This README is targeted at developers.  See the man page or the [Vivian project page](https://github.com/p00ya/vivian) for user-oriented documentation.
 
 ## Design
 

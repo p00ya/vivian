@@ -1,0 +1,121 @@
+.\" vivtool.1 -*- nroff -*-
+.\" Copyright 2020 Dean Scarff
+.\"
+.\" Licensed under the Apache License, Version 2.0 (the "License"); you
+.\" may not use this file except in compliance with the License.  You
+.\" may obtain a copy of the License at
+.\"
+.\"     http://www.apache.org/licenses/LICENSE-2.0
+.\"
+.\" Unless required by applicable law or agreed to in writing, software
+.\" distributed under the License is distributed on an "AS IS" BASIS,
+.\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.\" See the License for the specific language governing permissions and
+.\" limitations under the License.
+.Dd Sep 15, 2020
+.Dt VIVTOOL 1
+.Sh NAME
+.Nm vivtool
+.Nd downloads .FIT activity logs from a Viiiiva heart rate monitor
+.Sh SYNOPSIS
+.Nm
+.Fl \-help
+.Nm
+.Cm ls
+.Op Fl v
+.Op Fl l
+.Op Fl h
+.Op Fl u Ar uuid
+.Nm
+.Cm cp
+.Op Fl v
+.Op Fl u Ar uuid
+.Ar file
+.Ar destination
+.Sh DESCRIPTION
+.Nm
+is a macOS command-line utility for downloading .FIT activity logs from a
+Viiiiva heart rate monitor without using the official 4iiii app.
+.Pp
+The
+.Nm
+command accepts various subcommands with their own options and arguments.
+.Pp
+.Nm
+synthesizes filenames for the .FIT activity files on a Viiiiva device.  These
+are formatted as 4 hexadecimal digits (corresponding to the 16-bit internal ID
+used by the Viiiiva), followed by the
+.Dq .fit
+file extension.  For example, the file with ID
+.Dq 0x1f
+would have a filename of
+.Dq 001f.fit Ns .
+.Ss Common options
+These options may be used with multiple subcommands:
+.Bl -tag -width Ds
+.It Fl ? , Fl \-help
+Shows help information for the command or subcommand.
+.It Fl v , Fl \-verbose
+Output extra information and warnings.  This will write progress messages to
+standard error, e.g. when waiting for the Bluetooth system to be powered on or
+for a Viiiiva device to become visible.
+.It Fl u Ar uuid , Fl \-uuid Ar uuid
+Specifies the 128-bit Bluetooth LE UUID of the device to connect to.  The UUID
+must be specified as a string of 32 hexadecimal characters, optionally separated
+by
+.Sq -
+characters.
+.Pp
+Without this option,
+.Nm
+will run a (slow) Bluetooth LE scan for heart rate monitors, and will connect
+to the first peripheral it discovers that supports the Viiiiva service.
+.El
+.Ss ls command
+.Nm
+.Cm ls
+.Op Fl v
+.Op Fl l
+.Op Fl h
+.Op Fl \-u Ar uuid
+.Pp
+Lists the .FIT activity files on a Viiiiva device.
+It supports the options:
+.Bl -tag -width Ds
+.It Fl l
+Outputs a table with the size, creation time and filename of each file on the
+Viiiiva device.  The columns are separated by tab characters, with one file per
+line.  Without this option,
+.Nm
+outputs just the filename column.
+.It Fl h
+With the
+.Fl l
+option, outputs localized sizes and times.  Without this option,
+.Nm Cm ls Fl l
+will always print the file size in bytes and the UTC time in
+.Em ISO 8601
+format, so that it may be parsed programmatically.
+.El
+.Ss Cm cp command
+.Nm
+.Cm cp
+.Op Fl v
+.Op Fl \-u Ar uuid
+.Ar file Ar destination
+.Pp
+Copies
+.Ar file
+from the Viiiiva device to
+.Ar destination Ns .
+.Ar destination
+may be a file or a directory.  If it is an existing file, it will be
+overwritten without any confirmation or warning.
+.Sh AUTHOR
+.Nm
+and its manual page were
+written by
+.An Dean Scarff.
+.Sh BUGS
+Report bugs via the project website:
+.Lk https://github.com/p00ya/vivian

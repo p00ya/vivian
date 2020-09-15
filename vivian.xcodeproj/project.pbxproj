@@ -18,6 +18,7 @@
 		2878BDC62507B0B500CA3CA7 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 2878BDC52507B0B500CA3CA7 /* ArgumentParser */; };
 		2878BDCB2507C0A500CA3CA7 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28D3A8662485005200F8222E /* CoreBluetooth.framework */; };
 		2878BDCD2507C14400CA3CA7 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDCC2507C14400CA3CA7 /* BluetoothManager.swift */; };
+		287B2F4325102F7600F2D14C /* vivtool.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 287B2F42251027F400F2D14C /* vivtool.1 */; };
 		287F4EA72470155D00640033 /* packet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287F4E80246FCF0500640033 /* packet.cpp */; };
 		287F4EA82470155D00640033 /* crc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 287F4E82246FD87200640033 /* crc.cpp */; };
 		287F4EAC24701F8E00640033 /* libviv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 287F4E9A247014C900640033 /* libviv.a */; };
@@ -63,9 +64,10 @@
 		2878BDA625045C9300CA3CA7 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			dstPath = /usr/local/share/man/man1;
 			dstSubfolderSpec = 0;
 			files = (
+				287B2F4325102F7600F2D14C /* vivtool.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -86,6 +88,7 @@
 		2878BDBC25079B9C00CA3CA7 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		2878BDBE25079BE500CA3CA7 /* TerminalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalManager.swift; sourceTree = "<group>"; };
 		2878BDCC2507C14400CA3CA7 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		287B2F42251027F400F2D14C /* vivtool.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; name = vivtool.1; path = vivtool/vivtool.1; sourceTree = SOURCE_ROOT; };
 		287F4E79246F99E600640033 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		287F4E7A246F9C8E00640033 /* packet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = packet.h; sourceTree = "<group>"; };
 		287F4E7E246FC37600640033 /* endian.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = endian.hpp; sourceTree = "<group>"; };
@@ -168,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				28B724EC250AE7AE00325C2A /* README.md */,
+				287B2F42251027F400F2D14C /* vivtool.1 */,
 				28B724FA250AFE7700325C2A /* Utilities */,
 				2878BDCC2507C14400CA3CA7 /* BluetoothManager.swift */,
 				2878BDBE25079BE500CA3CA7 /* TerminalManager.swift */,
