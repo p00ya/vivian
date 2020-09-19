@@ -20,14 +20,60 @@
                ReferencedContainer = "container:vivian.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2828CD5F250E3E31008894BA"
+               BuildableName = "vivtoolTests.xctest"
+               BlueprintName = "vivtoolTests"
+               ReferencedContainer = "container:vivian.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "NO"
+      enableAddressSanitizer = "YES"
+      enableASanStackUseAfterReturn = "YES"
+      enableUBSanitizer = "YES"
+      language = "en"
+      region = "US">
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "TZ"
+            value = "UTC"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2828CD5F250E3E31008894BA"
+               BuildableName = "vivtoolTests.xctest"
+               BlueprintName = "vivtoolTests"
+               ReferencedContainer = "container:vivian.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "287F4E89246FEB1500640033"
+               BuildableName = "vivTests.xctest"
+               BlueprintName = "vivTests"
+               ReferencedContainer = "container:vivian.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

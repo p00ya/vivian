@@ -45,11 +45,11 @@ Currently the first two goals have been met, and the desktop app is on hold.
 
 ### Building
 
-The binaries can be built by opening `vivian.xcodeproj` and building from Xcode.  Alternatively, build from the command line:
+The binaries can be built by opening `vivian.xcodeproj` and building from Xcode.  Alternatively, test and build from the command line:
 
 ```sh
-xcodebuild
-xcodebuild test -scheme viv
+xcodebuild test -scheme vivtool
+xcodebuild build -scheme vivtool -configuration Release
 ```
 
 ### Overview

@@ -24,7 +24,9 @@ centralManager.delegate = bluetoothManager
 let protocolManager = VLProtocolManager()
 let vivManager = VivManager(store: store, protocolManager: protocolManager)
 protocolManager.delegate = vivManager
-let terminalManager = TerminalManager(store: store)
+let terminalManager = TerminalManager(
+  store: store, standardOutput: FileOutputStream(FileHandle.standardOutput),
+  standardError: FileOutputStream(FileHandle.standardError))
 
 bluetoothManager.connect()
 terminalManager.connect()

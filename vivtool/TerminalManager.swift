@@ -23,7 +23,7 @@ import Combine
 /// commands to the terminal and writes downloaded files to the filesystem.
 ///
 /// Also handles terminating the process with the appropriate exit status.
-class TerminalManager {
+class TerminalManager<Stream: TextOutputStream> {
   private var cancellable = Set<AnyCancellable>()
 
   private var command: ParsableCommand?
@@ -34,8 +34,16 @@ class TerminalManager {
 
   private let store: Store
 
-  init(store: Store) {
+  private var standardOutput: Stream
+  private var standardError: Stream
+
+  init(
+    store: Store, standardOutput: Stream,
+    standardError: Stream
+  ) {
     self.store = store
+    self.standardOutput = standardOutput
+    self.standardError = standardError
   }
 
   /// Connects to the application store.
@@ -117,39 +125,40 @@ class TerminalManager {
       if verbose { return }
       message = m
     }
-    // Swift strings are guaranteed to be encodable in UTF-8.
-    FileHandle.standardError.write("\(message)\n".data(using: .utf8)!)
+    print(message, to: &standardError)
   }
 
   func renderDirectory(_ directory: [VLDirectoryEntry], withOptions command: VivtoolCommand.List) {
     let entryRenderer: (VLDirectoryEntry) -> Void
     if !command.longFormat {
-      entryRenderer = { print("\(makeFilename(for: $0))") }
+      var standardOutput = self.standardOutput
+      entryRenderer = { print("\(makeFilename(for: $0))", to: &standardOutput) }
     } else if command.humanReadable {
       let fileSizeFormatter = ByteCountFormatter()
       let timeFormatter = DateFormatter()
       timeFormatter.dateStyle = .short
       timeFormatter.timeStyle = .short
-      entryRenderer = {
-        Self.renderDirectoryEntry(
-          $0, withFileSizeFormatter: fileSizeFormatter,
-          timeFormatter: timeFormatter)
+      entryRenderer = { [weak self] in
+        self?
+          .renderLocalizedDirectoryEntry(
+            $0, withFileSizeFormatter: fileSizeFormatter,
+            timeFormatter: timeFormatter)
       }
     } else {
-      entryRenderer = Self.renderDirectoryEntry(_:)
+      entryRenderer = renderDirectoryEntry(_:)
     }
     directory.filter({ $0.file_type == .fitActivity }).forEach(entryRenderer)
     store.dispatch { $0.shouldTerminate = true }
   }
 
-  private static func renderDirectoryEntry(_ entry: VLDirectoryEntry) {
+  func renderDirectoryEntry(_ entry: VLDirectoryEntry) {
     let date = Date(timeIntervalSince1970: TimeInterval(entry.posix_time))
     let time = ISO8601DateFormatter().string(from: date)
     let filename = makeFilename(for: entry)
-    print("\(entry.length)\t\(time)\t\(filename)\n")
+    print("\(entry.length)\t\(time)\t\(filename)", to: &standardOutput)
   }
 
-  private static func renderDirectoryEntry(
+  private func renderLocalizedDirectoryEntry(
     _ entry: VLDirectoryEntry, withFileSizeFormatter fileSizeFormatter: ByteCountFormatter,
     timeFormatter: DateFormatter
   ) {
@@ -157,7 +166,7 @@ class TerminalManager {
     let date = Date(timeIntervalSince1970: TimeInterval(entry.posix_time))
     let time = timeFormatter.string(from: date)
     let filename = makeFilename(for: entry)
-    print("\(fileSize)\t\(time)\t\(filename)\n")
+    print("\(fileSize)\t\(time)\t\(filename)", to: &standardOutput)
   }
 
   private func renderDownloadedFile(_ data: Data) {
@@ -172,7 +181,7 @@ class TerminalManager {
   }
 
   func terminate() {
-    exit(vivtool.store.state.exitStatus)
+    exit(store.state.exitStatus)
   }
 }
 
@@ -184,7 +193,7 @@ class TerminalManager {
 ///
 /// - Parameter entry: The entry for an activity file.
 /// - Returns: A formatted filename for the given entry, e.g. "0001.fit".
-fileprivate func makeFilename(for entry: VLDirectoryEntry) -> String {
+func makeFilename(for entry: VLDirectoryEntry) -> String {
   return String(format: "%04x.fit", entry.index)
 }
 
@@ -195,7 +204,7 @@ fileprivate func makeFilename(for entry: VLDirectoryEntry) -> String {
 /// - Parameter filename: 4 hex digits followed by a ".fit" extension, e.g.
 ///     "0001.fit".
 /// - Returns: The parsed index or nil.
-fileprivate func parseIndex(from filename: String) -> UInt16? {
+func parseIndex(from filename: String) -> UInt16? {
   UInt16(filename.prefix(4), radix: 16)
 }
 

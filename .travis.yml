@@ -27,6 +27,6 @@ osx_image:
   - xcode12
 language: objective-c
 xcode_project: vivian.xcodeproj
-xcode_scheme: viv
+xcode_scheme: vivtool
 xcode_destination: platform=macOS
 xcodebuild_args: -disableAutomaticPackageResolution

@@ -1,4 +1,4 @@
-// vivtool-Bridging-Header.h - objective-C bridging header
+// FileOutputStream.swift
 // Copyright 2020 Dean Scarff
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef vivtool_Bridging_Header_h
-#define vivtool_Bridging_Header_h
+import Foundation
 
-#include "viv/manager_objc_bridge.h"
+/// Stream that writes to files.
+class FileOutputStream: TextOutputStream {
+  private let fileHandle: FileHandle
+  let encoding: String.Encoding
 
-#endif /* vivtool_Bridging_Header_h */
+  init(_ fileHandle: FileHandle, encoding: String.Encoding = .utf8) {
+    self.fileHandle = fileHandle
+    self.encoding = encoding
+  }
+
+  func write(_ string: String) {
+    if let data = string.data(using: encoding) {
+      fileHandle.write(data)
+    }
+  }
+}
