@@ -159,7 +159,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
       // Scanning continues until `didDiscoverVivaService` finds the Viiiiva
       // service.
       store.state.message = .verboseError("scanning for Viiiiva, make sure it's being worn...")
-      centralManager.scanForPeripherals(withServices: [CBUUID.heartRateServiceUuid], options: nil)
+      centralManager.scanForPeripherals(withServices: [CBUUID.heartRateService], options: nil)
     }
   }
 
@@ -180,12 +180,12 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
       return
     }
 
-    if let service = peripheral.services?.first(where: { $0.uuid == CBUUID.vivaServiceUuid }) {
+    if let service = peripheral.services?.first(where: { $0.uuid == CBUUID.vivaService }) {
       didDiscoverVivaService(service)
       return
     }
 
-    peripheral.discoverServices([CBUUID.vivaServiceUuid])
+    peripheral.discoverServices([CBUUID.vivaService])
   }
 
   private func discoverCharacteristic() {
@@ -194,7 +194,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
       return
     }
 
-    viva.discoverCharacteristics([CBUUID.vivaCharacteristicUuid], for: vivaService)
+    viva.discoverCharacteristics([CBUUID.vivaCharacteristic], for: vivaService)
   }
 
   private func connectCharacteristic() {
@@ -260,7 +260,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     assert(peripheral === discoveredPeripherals.first!)
     discoveredPeripherals.removeFirst()
 
-    if let service = peripheral.services?.first(where: { $0.uuid == CBUUID.vivaServiceUuid }) {
+    if let service = peripheral.services?.first(where: { $0.uuid == CBUUID.vivaService }) {
       didDiscoverVivaService(service)
     } else {
       centralManager.cancelPeripheralConnection(peripheral)
@@ -278,7 +278,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
 
     guard
       let characteristic = service.characteristics?
-        .first(where: { $0.uuid == CBUUID.vivaCharacteristicUuid })
+        .first(where: { $0.uuid == CBUUID.vivaCharacteristic })
     else { return }
 
     vivaCharacteristic = characteristic
@@ -451,15 +451,15 @@ extension BluetoothPeripheral {
 extension CBUUID {
   /// Bluetooth UUID used by Viiiiva heart rate monitors for a non-standard
   /// service.
-  fileprivate static let vivaServiceUuid = CBUUID(string: "5B774111-D526-7B9A-4AE7-E59D015D79ED")
+  fileprivate static let vivaService = CBUUID(string: "5B774111-D526-7B9A-4AE7-E59D015D79ED")
 
   /// Bluetooth UUID used by Viiiiva heart rate monitors for a non-standard
   /// characteristic.
-  fileprivate static let vivaCharacteristicUuid = CBUUID(
+  fileprivate static let vivaCharacteristic = CBUUID(
     string: "5B774321-D526-7B9A-4AE7-E59D015D79ED")
 
   /// Identifier for the standard GATT heart rate monitor service.
   ///
   /// See: https://www.bluetooth.com/specifications/gatt/services/
-  fileprivate static let heartRateServiceUuid = CBUUID(string: "180D")
+  fileprivate static let heartRateService = CBUUID(string: "180D")
 }
