@@ -72,5 +72,12 @@ class State {
   @Published var directory = [VLDirectoryEntry]()
 
   /// Publisher of downloaded files.
+  ///
+  /// The tuple consists of the file index and contents.
   @Passthrough var downloadedFile: (UInt16, Data)
+
+  /// Publisher of deleted files.
+  ///
+  /// The tuple consists of the file index and the deletion success.
+  @Passthrough var deletedFile: (UInt16, Bool)
 }

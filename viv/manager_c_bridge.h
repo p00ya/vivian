@@ -97,7 +97,8 @@ struct VLCProtocolManagerDelegate {
   /// Called when the manager finishes erasing file.
   ///
   /// \param index The file's index.
-  void (*_Nullable did_erase_file)(void *_Nullable ctx, uint16_t index);
+  /// \param ok Non-zero if the file was erased.
+  void (*_Nullable did_erase_file)(void *_Nullable ctx, uint16_t index, int ok);
 };
 typedef struct VLCProtocolManagerDelegate VLManagerDelegate;
 

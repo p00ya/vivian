@@ -74,6 +74,12 @@ class TerminalManager<Stream: TextOutputStream> {
         self?.renderDownloadedFile(downloadedFile.1)
       }
       .store(in: &cancellable)
+
+    store.receive(\.$deletedFile)
+      .sink { [weak self] (deletedFile) in
+        self?.renderDeletedFile(deletedFile.0, ok: deletedFile.1)
+      }
+      .store(in: &cancellable)
   }
 
   /// Parses the command line arguments and runs commands.
@@ -103,7 +109,18 @@ class TerminalManager<Stream: TextOutputStream> {
           }
           state.vivCommandQueue.append(.downloadFile(index: index))
         }
+      case let delete as VivtoolCommand.Delete:
+        verbose = delete.common.verbose
+        guard let index = parseIndex(from: delete.file) else {
+          VivtoolCommand.exit(withError: TerminalError.invalidSourceFile(delete.file))
+        }
 
+        store.dispatch { (state) in
+          if let uuid = delete.common.uuid {
+            state.deviceCriteria = .byUuid(uuid)
+          }
+          state.vivCommandQueue.append(.deleteFile(index: index))
+        }
       default:
         // Let ArgumentParser print help output.
         VivtoolCommand.main()
@@ -180,6 +197,17 @@ class TerminalManager<Stream: TextOutputStream> {
     store.dispatch { $0.shouldTerminate = true }
   }
 
+  private func renderDeletedFile(_ index: UInt16, ok: Bool) {
+    store.dispatch { (state) in
+      if !ok {
+        let hexIndex = String(format: "%04x", index)
+        state.message = .error("Error deleting file at index \(hexIndex)")
+        state.exitStatus = 1
+      }
+      state.shouldTerminate = true
+    }
+  }
+
   func terminate() {
     exit(store.state.exitStatus)
   }
@@ -213,7 +241,7 @@ struct VivtoolCommand: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "vivatool",
     abstract: "A utility for interacting with Viiiiva devices.",
-    subcommands: [List.self, Copy.self],
+    subcommands: [List.self, Copy.self, Delete.self],
     helpNames: [.long, .customShort("?")])
 }
 
@@ -256,7 +284,7 @@ extension VivtoolCommand {
     var destination: String
 
     mutating func validate() throws {
-      guard file.range(of: "[0-9a-f]{4}.fit", options: .regularExpression) != nil else {
+      guard isValidFilename(file) else {
         throw ValidationError("\(file) is not a valid Viiiiva filename.")
       }
     }
@@ -266,6 +294,30 @@ extension VivtoolCommand {
       return destination.hasDirectoryPath
         ? destination.appendingPathComponent(file, isDirectory: false) : destination
     }
+  }
+
+  struct Delete: ParsableCommand {
+    static let configuration = CommandConfiguration(
+      commandName: "rm", abstract: "Delete file.")
+
+    @OptionGroup var common: CommonOptions
+
+    @Argument(help: "Viiiiva filename, e.g. \"0001.fit\".")
+    var file: String
+
+    mutating func validate() throws {
+      guard isValidFilename(file) else {
+        throw ValidationError("\(file) is not a valid Viiiiva filename.")
+      }
+    }
+  }
+
+  /// Validates a Viiiva filename.
+  ///
+  /// - Parameter file: The filename to validate.
+  /// - Returns: True if the filename was valid.
+  static func isValidFilename(_ file: String) -> Bool {
+    return file.range(of: "[0-9a-f]{4}.fit", options: .regularExpression) != nil
   }
 }
 

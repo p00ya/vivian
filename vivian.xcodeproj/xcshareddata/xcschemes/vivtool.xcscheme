@@ -124,6 +124,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "rm"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "0020.fit"
             isEnabled = "NO">
          </CommandLineArgument>

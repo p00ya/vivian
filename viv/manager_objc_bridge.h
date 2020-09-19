@@ -84,7 +84,7 @@
 /// Called when the manager finishes erasing file.
 ///
 /// \param index The file's index.
-- (void)didEraseFile:(uint16_t)index;
+- (void)didEraseFile:(uint16_t)index successfully:(BOOL)ok;
 
 @end
 

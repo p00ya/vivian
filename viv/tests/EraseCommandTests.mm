@@ -24,7 +24,7 @@
 @implementation EraseCommandTests
 
 - (void)testMakeCommandPacket {
-  viv::EraseCommand cmd(0x1234, []() {});
+  viv::EraseCommand cmd(0x1234, [](bool) {});
   VLPacket const packet = cmd.MakeCommandPacket();
 
   XCTAssertEqual(packet.payload_length, 2);
@@ -33,7 +33,8 @@
 
 - (void)testReadPacket {
   VLPacket const ack = {0xe9, 0, 1, 3, {0x0b, 0x84}};
-  viv::EraseCommand cmd(0x1234, []() {});
+  bool replyOk = false;
+  viv::EraseCommand cmd(0x1234, [&replyOk](bool ok) { replyOk = ok; });
   int err = cmd.ReadPacket(ack);
   XCTAssertEqual(err, 0);
 
@@ -41,6 +42,21 @@
   err = cmd.ReadPacket(reply);
   XCTAssertEqual(err, 0);
   XCTAssertTrue(cmd.MaybeFinish());
+  XCTAssertTrue(replyOk);
+}
+
+- (void)testReadPacketError {
+  VLPacket const ack = {0xe9, 0, 1, 3, {0x0b, 0x84}};
+  bool replyOk = false;
+  viv::EraseCommand cmd(0x1234, [&replyOk](bool ok) { replyOk = ok; });
+  int err = cmd.ReadPacket(ack);
+  XCTAssertEqual(err, 0);
+
+  VLPacket const reply = {0xfb, 1, 1, 3, {0x0b, 0x05}, {1}};
+  err = cmd.ReadPacket(reply);
+  XCTAssertEqual(err, 0);
+  XCTAssertTrue(cmd.MaybeFinish());
+  XCTAssertFalse(replyOk);
 }
 
 @end

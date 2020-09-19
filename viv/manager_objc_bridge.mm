@@ -83,9 +83,9 @@ public:
     }
   }
 
-  void DidEraseFile(uint16_t index) const override {
-    if ([delegate_ respondsToSelector:@selector(didEraseFile:)]) {
-      [delegate_ didEraseFile:index];
+  void DidEraseFile(uint16_t index, bool ok) const override {
+    if ([delegate_ respondsToSelector:@selector(didEraseFile:successfully:)]) {
+      [delegate_ didEraseFile:index successfully:ok];
     }
   }
 

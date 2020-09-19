@@ -65,8 +65,9 @@ class ManagerTests: XCTestCase {
           managerTests: p!, event: "didDownloadFile(\(index))")
         ManagerTests.captureData(managerTests: p!, data: data, length: length)
       },
-      did_erase_file: { (p, index) in
-        ManagerTests.logDelegateEvent(managerTests: p!, event: "didEraseFile(\(index))")
+      did_erase_file: { (p, index, ok) in
+        let ok = ok != 0
+        ManagerTests.logDelegateEvent(managerTests: p!, event: "didEraseFile(\(index), \(ok))")
       })
   }
 
@@ -206,6 +207,33 @@ class ManagerTests: XCTestCase {
       XCTAssertEqual(directoryEntries[0].index, 2)
       XCTAssertEqual(directoryEntries[0].file_type, .fitActivity)
     }
+  }
+
+  func testEraseFile() throws {
+    var selfRef = self
+    var manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
+    defer { manager.deinitialize() }
+
+    manager.eraseFile(index: 1)
+    XCTAssertEqual(events.removeLast(), "didStartWaiting")
+    XCTAssertEqual(events.removeLast(), "writeValue")
+    XCTAssert(events.isEmpty)
+
+    let writeAck: ContiguousArray<UInt8> = [0xe9, 0, 1, 3, 0x0b, 0x84]
+    writeAck.withUnsafeBufferPointer { buffer in
+      manager.notifyValue(value: buffer.baseAddress!, length: buffer.count)
+    }
+    XCTAssert(events.isEmpty)
+
+    let eraseResponse: ContiguousArray<UInt8> = [0xfc, 1, 1, 3, 0x0b, 0x05, 0]
+    eraseResponse.withUnsafeBufferPointer { buffer in
+      manager.notifyValue(value: buffer.baseAddress!, length: buffer.count)
+    }
+
+    XCTAssertEqual(events.removeLast(), "writeValue")
+    XCTAssertEqual(events.removeLast(), "didFinishWaiting")
+    XCTAssertEqual(events.removeLast(), "didEraseFile(1, true)")
+    XCTAssert(events.isEmpty)
   }
 
   func testSetTime() throws {

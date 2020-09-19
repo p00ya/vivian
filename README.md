@@ -15,6 +15,7 @@ Vivian does *not* expose generic Bluetooth heart rate monitor (HRM) functionalit
 ```sh
 $ vivtool ls -l
 $ vivtool cp 0001.fit ./
+$ vivtool rm 0001.fit
 ```
 
 ## Installation

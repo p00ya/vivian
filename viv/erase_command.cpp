@@ -46,18 +46,23 @@ EraseCommand::ReadReply(VLPacket const &packet) {
     return -1;
   }
   if (OSReadLittleInt16(packet.cmd, 0) != kCommandEraseReply ||
-      (packet.payload_length != 1) || (packet.payload[0] != 0) ||
-      VLValidatePacketFromViva(&packet)) {
+      (packet.payload_length != 1) || VLValidatePacketFromViva(&packet)) {
     return -2;
   }
 
+  is_ok_ = packet.payload[0] == 0;
   is_finished_ = true;
   return 0;
 }
 
 bool
 EraseCommand::MaybeFinish() const {
-  return has_ack_ && is_finished_;
+  if (has_ack_ && is_finished_) {
+    on_finish_(is_ok_);
+    return true;
+  }
+
+  return false;
 }
 
 } // namespace viv

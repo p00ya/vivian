@@ -31,7 +31,10 @@ namespace viv {
 class EraseCommand : public CommandWithReply {
 public:
   /// Function to call once the file has been erased.
-  using OnFinishCallback = ::std::function<void()>;
+  ///
+  /// The boolean parameter is true if the erase was successful, false
+  /// otherwise.
+  using OnFinishCallback = ::std::function<void(bool)>;
 
   explicit EraseCommand(uint16_t index, OnFinishCallback on_finish) noexcept;
 
@@ -48,7 +51,8 @@ protected:
 private:
   OnFinishCallback const on_finish_;
   uint16_t const index_;
-  bool is_finished_;
+  bool is_ok_ = false;
+  bool is_finished_ = false;
 };
 
 } // namespace viv

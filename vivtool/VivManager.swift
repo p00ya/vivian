@@ -72,6 +72,8 @@ class VivManager: NSObject {
       self.downloadDirectory()
     case .downloadFile(let index):
       self.downloadFile(index: index)
+    case .deleteFile(let index):
+      self.deleteFile(index: index)
     default:
       // Queue is empty, do nothing.
       break
@@ -91,6 +93,13 @@ class VivManager: NSObject {
     self.isBusy = true
     self.protocolManager.downloadFile(index)
   }
+
+  func deleteFile(index: UInt16) {
+    assert(!self.isBusy)
+
+    self.isBusy = true
+    self.protocolManager.eraseFile(index)
+  }
 }
 
 extension VivManager: VLProtocolManagerDelegate {
@@ -108,6 +117,9 @@ extension VivManager: VLProtocolManagerDelegate {
   }
 
   func didError(_ error: Error) {
+    store.dispatch { (store) in
+      store.shouldTerminate = true
+    }
     fatalError(error.localizedDescription)
   }
 
@@ -131,8 +143,11 @@ extension VivManager: VLProtocolManagerDelegate {
     }
   }
 
-  func didEraseFile(_ index: UInt16) {
-    // TODO
+  func didEraseFile(_ index: UInt16, successfully ok: Bool) {
+    store.dispatch { (state) in
+      state.deletedFile = (index, ok)
+      state.dequeCommand(.deleteFile(index: index))
+    }
   }
 }
 
@@ -143,6 +158,9 @@ public enum VivCommand: Equatable {
 
   /// Command to download a single file.
   case downloadFile(index: UInt16)
+
+  /// Command to delete a single file.
+  case deleteFile(index: UInt16)
 }
 
 extension State {

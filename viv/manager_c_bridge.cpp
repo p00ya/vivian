@@ -75,9 +75,9 @@ public:
     }
   }
 
-  void DidEraseFile(uint16_t index) const override {
+  void DidEraseFile(uint16_t index, bool ok) const override {
     if (delegate_.did_erase_file != nullptr) {
-      (*delegate_.did_erase_file)(ctx_, index);
+      (*delegate_.did_erase_file)(ctx_, index, ok);
     }
   }
 

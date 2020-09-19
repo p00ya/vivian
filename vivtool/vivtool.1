@@ -32,6 +32,11 @@
 .Op Fl u Ar uuid
 .Ar file
 .Ar destination
+.Nm
+.Cm rm
+.Op Fl v
+.Op Fl u Ar uuid
+.Ar file
 .Sh DESCRIPTION
 .Nm
 is a macOS command-line utility for downloading .FIT activity logs from a
@@ -111,6 +116,16 @@ from the Viiiiva device to
 .Ar destination
 may be a file or a directory.  If it is an existing file, it will be
 overwritten without any confirmation or warning.
+.Ss Cm rm command
+.Nm
+.Cm rm
+.Op Fl v
+.Op Fl u Ar uuid
+.Ar file
+.Pp
+Deletes
+.Ar file
+from the Viiiiva device.
 .Sh AUTHOR
 .Nm
 and its manual page were written by

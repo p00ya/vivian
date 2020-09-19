@@ -59,7 +59,7 @@ public:
   virtual void
   DidDownloadFile(uint16_t index, uint8_t const *data, size_t length) const {}
 
-  virtual void DidEraseFile(uint16_t index) const {}
+  virtual void DidEraseFile(uint16_t index, bool ok) const {}
 };
 
 class Manager {
@@ -81,7 +81,12 @@ public:
   void SetTime(time_t posix_time);
 
 private:
-  void WritePacket(VLPacket const &packet);
+  void WritePacket(VLPacket const &packet) {
+    WritePacket(packet, true);
+  }
+
+  /// Serializes the packet and sends it to the delegate.
+  void WritePacket(VLPacket const &packet, bool wait_for_ack);
 
   ::std::unique_ptr<ManagerDelegate> const delegate_;
 

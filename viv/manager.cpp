@@ -98,6 +98,10 @@ Manager::NotifyValue(uint8_t const *value, size_t length) {
 
   if (command.MaybeFinish()) {
     delegate_->DidFinishWaiting();
+    if (response_ && response_->ShouldAckReply()) {
+      const VLPacket packet = response_->MakeResponseAckPacket();
+      WritePacket(packet, false);
+    }
     response_.release();
   }
 }
@@ -161,8 +165,8 @@ Manager::EraseFile(uint16_t index) {
   command_.release();
   // While this leaks delegate_ out of its unique_ptr, the response_ is owned by
   // the Manager so will not outlive the delegate.
-  auto on_finish = [&delegate = *delegate_, index]() {
-    delegate.DidEraseFile(index);
+  auto on_finish = [&delegate = *delegate_, index](bool success) {
+    delegate.DidEraseFile(index, success);
   };
   response_.reset(new EraseCommand(index, std::move(on_finish)));
 
@@ -182,7 +186,7 @@ Manager::SetTime(time_t posix_time) {
 }
 
 void
-Manager::WritePacket(VLPacket const &packet) {
+Manager::WritePacket(VLPacket const &packet, bool wait_for_ack) {
   // C++17 s[basic.lval] clause 8.8 specifies special aliasing rules for
   // unsigned char, but not uint8_t.  We rely on the (ubiquitous) assumption
   // that they're the same.
@@ -194,7 +198,9 @@ Manager::WritePacket(VLPacket const &packet) {
     delegate_->DidError(kVLManagerErrorUnexpected, "WriteValue");
     return;
   }
-  delegate_->DidStartWaiting();
+  if (wait_for_ack) {
+    delegate_->DidStartWaiting();
+  }
 }
 
 } // namespace viv

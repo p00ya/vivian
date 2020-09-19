@@ -98,6 +98,11 @@ class TerminalManagerStaticTests: XCTestCase {
     _ = try VivtoolCommand.parseAsRoot(["cp", "0001.fit", "dest.fit"])
     XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["cp", "0001.fit"]))
     XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["cp", "moo.fit"]))
+
+    _ = try VivtoolCommand.parseAsRoot(["rm", "0001.fit"])
+    XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm", "moo.fit"]))
+    XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm", "0001.fit", "0002.fit"]))
+    XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm"]))
   }
 }
 
