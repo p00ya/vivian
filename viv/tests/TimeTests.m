@@ -27,14 +27,14 @@
   XCTAssertEqual(
       VLGetVivaTimeFromPosix(631065600UL), 0U, "1989-12-31Z00:00:00");
   XCTAssertEqual(
-      VLGetVivaTimeFromPosix(1577836800UL), 946771200U, "1989-12-31Z00:00:00");
+      VLGetVivaTimeFromPosix(1577836800UL), 946771200U, "2020-01-01Z00:00:00");
 }
 
 - (void)testGetPosixTimeFromViva {
   XCTAssertEqual(
       VLGetPosixTimeFromViva(0U), 631065600UL, "1989-12-31Z00:00:00");
   XCTAssertEqual(
-      VLGetPosixTimeFromViva(946771200U), 1577836800UL, "1989-12-31Z00:00:00");
+      VLGetPosixTimeFromViva(946771200U), 1577836800UL, "2020-01-01Z00:00:00");
 }
 
 @end
