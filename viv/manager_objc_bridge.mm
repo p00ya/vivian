@@ -24,6 +24,31 @@ using viv::Manager;
 
 const NSErrorDomain VLOManagerErrorDomain = @"VLOManagerErrorDomain";
 
+static NSString *const VLOUserInfoMessageKey = @"message";
+
+/// Wrapper for errors from libviv, with custom description.
+@interface VLOError : NSError
+- (instancetype)initWithCode:(VLManagerErrorCode)code
+                     message:(NSString *)message;
+
+@end
+
+@implementation VLOError
+
+- (instancetype)initWithCode:(VLManagerErrorCode)code
+                     message:(NSString *)message {
+  self = [super initWithDomain:VLOManagerErrorDomain
+                          code:code
+                      userInfo:@{VLOUserInfoMessageKey : message}];
+  return self;
+}
+
+- (NSString *)localizedDescription {
+  return self.userInfo[VLOUserInfoMessageKey];
+}
+
+@end
+
 namespace {
 
 /// Implementation of the C++ delegate interface that forwards to the
@@ -56,9 +81,8 @@ public:
   void
   DidError(VLManagerErrorCode code, std::string const &&msg) const override {
     if ([delegate_ respondsToSelector:@selector(didError:)]) {
-      NSError *error = [NSError errorWithDomain:VLOManagerErrorDomain
-                                           code:code
-                                       userInfo:@{}];
+      NSString *message = [NSString stringWithUTF8String:msg.c_str()];
+      VLOError *error = [[VLOError alloc] initWithCode:code message:message];
       [delegate_ didError:error];
     }
   }

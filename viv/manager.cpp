@@ -92,7 +92,7 @@ Manager::NotifyValue(uint8_t const *value, size_t length) {
   if (command.ReadPacket(packet) < 0) {
     delegate_->DidError(
         kVLManagerErrorBadPayload,
-        command.name() + ": invalid value notification");
+        command.name() + ": error in response");
     return;
   }
 
