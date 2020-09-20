@@ -122,7 +122,7 @@ class TerminalManager<Stream: TextOutputStream> {
     case .error(let m):
       message = m
     case .verboseError(let m):
-      if verbose { return }
+      if !verbose { return }
       message = m
     }
     print(message, to: &standardError)
