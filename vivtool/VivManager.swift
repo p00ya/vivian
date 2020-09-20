@@ -14,9 +14,17 @@
 // limitations under the License.
 
 import Combine
+import Dispatch
 
 /// Bridge between vivtool and the libviv manager.
 class VivManager: NSObject {
+  /// Idle period before timing out.
+  ///
+  /// If the protocol manager has been waiting more than this period since it
+  /// was last notified of a value, it will be sent a timeout notification
+  /// and the application will terminate.
+  private static let timeoutInterval = DispatchTimeInterval.seconds(16)
+
   private let store: Store
 
   /// A manager for encoding and decoding messages to Viiiiva
@@ -27,6 +35,9 @@ class VivManager: NSObject {
   ///
   /// If true, no new commands should be issued to the manager.
   private var isBusy = false
+
+  /// Notifies the manager that it has been waiting for too long.
+  private var timeout: DispatchWorkItem?
 
   /// Subscriptions.
   private var cancellable = Set<AnyCancellable>()
@@ -60,7 +71,12 @@ class VivManager: NSObject {
       .store(in: &cancellable)
     store.receive(\.$characteristicWrite)
       .sink { [weak self] (value) in
-        self?.protocolManager.notifyValue(value)
+        guard let self = self else { return }
+        if self.isBusy {
+          self.restartTimer()
+        }
+
+        self.protocolManager.notifyValue(value)
       }
       .store(in: &cancellable)
   }
@@ -74,11 +90,32 @@ class VivManager: NSObject {
       self.downloadFile(index: index)
     case .deleteFile(let index):
       self.deleteFile(index: index)
-    default:
+    case nil:
       // Queue is empty, do nothing.
       break
     }
   }
+
+  fileprivate func restartTimer() {
+    if let timeout = timeout {
+      timeout.cancel()
+    }
+
+    let timeout = DispatchWorkItem(block: { [weak self] in self?.didTimeout() })
+    self.timeout = timeout
+    store.dispatchQueue.asyncAfter(deadline: DispatchTime.now().advanced(by: Self.timeoutInterval), execute: timeout)
+  }
+
+  fileprivate func didTimeout() {
+    protocolManager.notifyTimeout()
+    store.dispatch { (state) in
+      state.message = .error("timed out waiting for value from Viiiiva")
+      state.exitStatus = 1
+      state.shouldTerminate = true
+    }
+  }
+
+  // MARK: Commands
 
   func downloadDirectory() {
     assert(!self.isBusy)
@@ -109,18 +146,20 @@ extension VivManager: VLProtocolManagerDelegate {
   }
 
   func didStartWaiting() {
-    // TODO: set timeout
+    restartTimer()
   }
 
   func didFinishWaiting() {
-    // TODO: cancel timeout
+    timeout?.cancel()
+    isBusy = false
   }
 
   func didError(_ error: Error) {
     store.dispatch { (store) in
+      store.message = .error(error.localizedDescription)
+      store.exitStatus = 1
       store.shouldTerminate = true
     }
-    fatalError(error.localizedDescription)
   }
 
   func didParseDirectoryEntry(_ entry: VLDirectoryEntry) {
