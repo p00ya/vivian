@@ -239,7 +239,7 @@ func parseIndex(from filename: String) -> UInt16? {
 /// Defines the subcommands and their options.
 struct VivtoolCommand: ParsableCommand {
   static let configuration = CommandConfiguration(
-    commandName: "vivatool",
+    commandName: "vivtool",
     abstract: "A utility for interacting with Viiiiva devices.",
     subcommands: [List.self, Copy.self, Delete.self],
     helpNames: [.long, .customShort("?")])
