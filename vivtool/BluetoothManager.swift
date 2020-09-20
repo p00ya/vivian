@@ -251,6 +251,14 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     viva.writeValue(value, for: vivaCharacteristic, type: .withResponse)
   }
 
+  private func didConnectionError(_ error: Error) {
+    store.dispatch { (state) in
+      state.message = .verboseError(error.localizedDescription)
+      state.exitStatus = .connectionError
+      state.shouldTerminate = true
+    }
+  }
+
   // MARK: Generic CentralManagerDelegate methods
 
   func centralManagerDidUpdateState(_ central: Bluetooth.CentralManager) {
@@ -280,7 +288,14 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     _ central: Bluetooth.CentralManager, didFailToConnect peripheral: Bluetooth.Peripheral,
     error: Error?
   ) {
-    fatalError(error.debugDescription)
+    store.dispatch { (state) in
+      state.message = .error("failed to connect to device \(peripheral.identifier)")
+      if let error = error {
+        state.message = .verboseError(error.localizedDescription)
+      }
+      state.exitStatus = .connectionError
+      state.shouldTerminate = true
+    }
   }
 
   func centralManager(
@@ -288,10 +303,12 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     error: Error?
   ) {
     store.dispatch { (state) in
+      state.message = .error("device \(peripheral.identifier) disconnected")
       if let error = error {
-        state.message = .error(error.localizedDescription)
+        state.message = .verboseError(error.localizedDescription)
       }
-      state.pushCommand(.connectToPeripheral)
+      state.exitStatus = .connectionError
+      state.shouldTerminate = true
     }
   }
 
@@ -301,8 +318,10 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     _ peripheral: Bluetooth.Peripheral, didDiscoverServices error: Error?
   ) {
     guard error == nil else {
-      fatalError(error.debugDescription)
+
+      return
     }
+
     assert(peripheral === discoveredPeripherals.first!)
     discoveredPeripherals.removeFirst()
 
@@ -319,7 +338,8 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     error: Error?
   ) {
     guard error == nil else {
-      fatalError(error.debugDescription)
+      didConnectionError(error!)
+      return
     }
 
     guard
@@ -336,7 +356,8 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     error: Error?
   ) {
     guard error == nil else {
-      fatalError(error.debugDescription)
+      didConnectionError(error!)
+      return
     }
 
     guard let value = characteristic.value else { return }
@@ -349,12 +370,12 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     error: Error?
   ) {
     guard error == nil else {
-      fatalError(error.debugDescription)
+      didConnectionError(error!)
+      return
     }
 
     store.dispatch { $0.popCommand(.connectCharacteristic) }
   }
-
 }
 
 /// Bluetooth manager for use in production.

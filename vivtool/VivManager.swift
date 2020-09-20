@@ -103,14 +103,15 @@ class VivManager: NSObject {
 
     let timeout = DispatchWorkItem(block: { [weak self] in self?.didTimeout() })
     self.timeout = timeout
-    store.dispatchQueue.asyncAfter(deadline: DispatchTime.now().advanced(by: Self.timeoutInterval), execute: timeout)
+    store.dispatchQueue.asyncAfter(
+      deadline: DispatchTime.now().advanced(by: Self.timeoutInterval), execute: timeout)
   }
 
   fileprivate func didTimeout() {
     protocolManager.notifyTimeout()
     store.dispatch { (state) in
       state.message = .error("timed out waiting for value from Viiiiva")
-      state.exitStatus = 1
+      state.exitStatus = .connectionError
       state.shouldTerminate = true
     }
   }
@@ -157,7 +158,7 @@ extension VivManager: VLProtocolManagerDelegate {
   func didError(_ error: Error) {
     store.dispatch { (store) in
       store.message = .error(error.localizedDescription)
-      store.exitStatus = 1
+      store.exitStatus = .conditionError
       store.shouldTerminate = true
     }
   }

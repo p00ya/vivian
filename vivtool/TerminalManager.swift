@@ -186,7 +186,13 @@ class TerminalManager<Stream: TextOutputStream> {
       // destinationFile is set to non-nil in run().
       try data.write(to: destinationFile!)
     } catch {
-      VivtoolCommand.exit(withError: error)
+      let destinationFile = self.destinationFile!
+      store.dispatch { (state) in
+        state.message = .error("error writing to \"\(destinationFile)\"")
+        state.message = .verboseError(error.localizedDescription)
+        state.exitStatus = .conditionError
+        state.shouldTerminate = true
+      }
     }
 
     store.dispatch { $0.shouldTerminate = true }
@@ -197,14 +203,14 @@ class TerminalManager<Stream: TextOutputStream> {
       if !ok {
         let hexIndex = String(format: "%04x", index)
         state.message = .error("Error deleting file at index \(hexIndex)")
-        state.exitStatus = 1
+        state.exitStatus = .conditionError
       }
       state.shouldTerminate = true
     }
   }
 
   func terminate() {
-    exit(store.state.exitStatus)
+    exit(store.state.exitStatus.rawValue)
   }
 }
 
@@ -336,4 +342,17 @@ enum TerminalMessage {
 
 fileprivate enum TerminalError: Error {
   case invalidSourceFile(String)
+}
+
+/// Process exit status.
+enum ExitStatus: Int32 {
+  /// Successful execution of the command.
+  case success = 0
+
+  /// Error communicating with the Viiiiva device; probably retriable.
+  case connectionError = 1
+
+  /// Error that will probably not go away without changing something (e.g.
+  /// the command invocation).
+  case conditionError = 2
 }

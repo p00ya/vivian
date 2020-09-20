@@ -37,7 +37,7 @@ class State {
   @Published var shouldTerminate = false
 
   /// The exit status of the process.
-  @Published var exitStatus: Int32 = 0
+  @Published var exitStatus = ExitStatus.success
 
   /// The bluetooth state on the host machine.
   @Published var centralManagerState = CBManagerState.poweredOff
