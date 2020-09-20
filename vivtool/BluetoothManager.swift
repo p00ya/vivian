@@ -152,8 +152,8 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
       guard !centralManager.isScanning else { return }
 
       // The Viiiiva won't respond to discovery for the non-standard Viiiiva
-      // service (identified by CBUUID.vivaServiceUuid).  Look for the heart
-      // rate monitor service instead, and then connect and perform service
+      // service (identified by CBUUID.vivaService).  Look for the heart rate
+      // monitor service instead, and then connect and perform service
       // discovery.
       //
       // Scanning continues until `didDiscoverVivaService` finds the Viiiiva
