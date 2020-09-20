@@ -120,12 +120,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-v"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "rm"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-v"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "0020.fit"
@@ -133,14 +133,6 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/tmp"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--uuid"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "BA681C0A-D4F5-4A06-B763-9E44D7C97B08"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
