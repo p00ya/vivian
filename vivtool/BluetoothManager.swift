@@ -249,6 +249,18 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     fatalError(error.debugDescription)
   }
 
+  func centralManager(
+    _ central: Bluetooth.CentralManager, didDisconnectPeripheral peripheral: Bluetooth.Peripheral,
+    error: Error?
+  ) {
+    store.dispatch { (state) in
+      if let error = error {
+        state.message = .error(error.localizedDescription)
+      }
+      state.pushCommand(.connectToPeripheral)
+    }
+  }
+
   // MARK: Generic PeripheralDelegate methods
 
   func peripheral(
@@ -346,6 +358,12 @@ public class BluetoothManager: GenericBluetoothManager<CoreBluetoothTypes>,
     _ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?
   ) {
     super.centralManager(central, didFailToConnect: peripheral, error: error)
+  }
+
+  @objc public override func centralManager(
+    _ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?
+  ) {
+    super.centralManager(central, didDisconnectPeripheral: peripheral, error: error)
   }
 
   // MARK: CBPeripheralDelegate
