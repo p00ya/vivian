@@ -11,6 +11,8 @@
 		2828CD65250E3E31008894BA /* libviv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 287F4E9A247014C900640033 /* libviv.a */; };
 		2828CD6C250E3F55008894BA /* TerminalManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2828CD6B250E3F55008894BA /* TerminalManagerTests.swift */; };
 		284F9931247BA2FE00622114 /* BurstTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 284F9930247BA2FE00622114 /* BurstTests.mm */; };
+		2868E2A32516E9290024DCE1 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */; };
+		2868E2A42516E9290024DCE1 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */; };
 		2878BDAB25045C9300CA3CA7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAA25045C9300CA3CA7 /* main.swift */; };
 		2878BDB02504769900CA3CA7 /* manager_objc_bridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */; };
 		2878BDB32505021600CA3CA7 /* ManagerObjcBridgeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDB22505021600CA3CA7 /* ManagerObjcBridgeTests.m */; };
@@ -101,6 +103,7 @@
 		2828CD60250E3E31008894BA /* vivtoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vivtoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2828CD6B250E3F55008894BA /* TerminalManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalManagerTests.swift; sourceTree = "<group>"; };
 		284F9930247BA2FE00622114 /* BurstTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BurstTests.mm; sourceTree = "<group>"; };
+		2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		2878BDA825045C9300CA3CA7 /* vivtool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vivtool; sourceTree = BUILT_PRODUCTS_DIR; };
 		2878BDAA25045C9300CA3CA7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = manager_objc_bridge.mm; sourceTree = "<group>"; };
@@ -221,6 +224,7 @@
 				28B724FA250AFE7700325C2A /* Utilities */,
 				2878BDCC2507C14400CA3CA7 /* BluetoothManager.swift */,
 				2878BDBE25079BE500CA3CA7 /* TerminalManager.swift */,
+				2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */,
 				28B724ED250AEA2F00325C2A /* VivManager.swift */,
 				2878BDAA25045C9300CA3CA7 /* main.swift */,
 				2878BDB7250796AD00CA3CA7 /* vivtool-Bridging-Header.h */,
@@ -524,6 +528,7 @@
 				2828CD6C250E3F55008894BA /* TerminalManagerTests.swift in Sources */,
 				28B1E17125157773004F2AEC /* Store.swift in Sources */,
 				28B1E1772515AF08004F2AEC /* StringOutputStream.swift in Sources */,
+				2868E2A42516E9290024DCE1 /* UserDefaultsManager.swift in Sources */,
 				28B1E16B2515775E004F2AEC /* Bluetooth.swift in Sources */,
 				28B1E16E25157768004F2AEC /* VivManager.swift in Sources */,
 				28B1E174251583AF004F2AEC /* FileOutputStream.swift in Sources */,
@@ -543,6 +548,7 @@
 				28B724E42508A98400325C2A /* Bluetooth.swift in Sources */,
 				2878BDBB25079B8900CA3CA7 /* State.swift in Sources */,
 				28B1E173251583AF004F2AEC /* FileOutputStream.swift in Sources */,
+				2868E2A32516E9290024DCE1 /* UserDefaultsManager.swift in Sources */,
 				2878BDBF25079BE500CA3CA7 /* TerminalManager.swift in Sources */,
 				2828CD5A250DC8E4008894BA /* Passthrough.swift in Sources */,
 				2878BDBD25079B9C00CA3CA7 /* Store.swift in Sources */,

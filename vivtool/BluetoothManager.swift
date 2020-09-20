@@ -104,13 +104,34 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
 
   /// Returns a publisher for a particular peripheral.
   ///
+  /// The publisher will retrieve the peripheral asynchronously once a
+  /// subscription is received.  Subscribers will receive notifications on the
+  /// store's dispatch queue.
+  ///
   /// - Parameter uuid: The identifier for the peripheral.
-  /// - Returns: A publisher that retrieves the peripheral once a subscription
-  ///    is received.  May publish `nil` if the peripheral could not be found.
-  private func retrievePeripheral(by uuid: UUID) -> Deferred<Just<Bluetooth.Peripheral?>> {
+  /// - Returns: A publisher that retrieves the peripheral.  May publish `nil`
+  ///     if the peripheral could not be found.
+  private func retrievePeripheral(by uuid: UUID) -> AnyPublisher<Bluetooth.Peripheral?, Never> {
     return Deferred { [weak self] in
       Just(self?.centralManager.retrievePeripherals(withIdentifiers: [uuid]).first)
     }
+    .subscribe(on: DispatchQueue.global())
+    .receive(on: store.dispatchQueue)
+    .eraseToAnyPublisher()
+  }
+
+  /// Starts scanning for a Viiiiva device.
+  private func scanForViiiiva() {
+    guard !centralManager.isScanning else { return }
+
+    // The Viiiiva won't respond to discovery for the non-standard Viiiiva
+    // service (identified by CBUUID.vivaService).  Look for the heart rate
+    // monitor service instead, and then connect and perform service discovery.
+    //
+    // Scanning continues until `didDiscoverVivaService` finds the Viiiiva
+    // service.
+    store.state.message = .verboseError("scanning for Viiiiva, make sure it's being worn...")
+    centralManager.scanForPeripherals(withServices: [CBUUID.heartRateService], options: nil)
   }
 
   /// Registers the given peripheral and allows service discovery to proceed.
@@ -128,9 +149,16 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
   /// - Parameter service: The discovered Viiiiva service.
   private func didDiscoverVivaService(_ service: Bluetooth.Service) {
     centralManager.stopScan()
-    viva = service.peripheral
+    let peripheral = service.peripheral
+    viva = peripheral
     vivaService = service
-    store.dispatch { $0.popCommand(.discoverService) }
+    let name = peripheral.name
+    let uuid = peripheral.identifier
+    store.dispatch { (state) in
+      state.message = .verboseError("connected to device \"\(name ?? "")\" (\(uuid.uuidString))")
+      state.lastConnectedDevice = uuid
+      state.popCommand(.discoverService)
+    }
   }
 
   // MARK: Command implementations
@@ -139,27 +167,33 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     switch store.state.deviceCriteria {
     case .byUuid(let uuid):
       retrievePeripheral(by: uuid)
-        .subscribe(on: DispatchQueue.global())
-        .receive(on: store.dispatchQueue)
         .sink { [weak self] peripheral in
+          guard let self = self else { return }
           guard let peripheral = peripheral else {
-            fatalError("peripheral \(uuid) not found")
+            self.store
+              .dispatch { (state) in
+                state.message = .error("requested peripheral \(uuid) not found")
+                state.shouldTerminate = true
+              }
+            return
           }
-          self?.didFindPeripheral(peripheral)
+          self.didFindPeripheral(peripheral)
         }
         .store(in: &cancellable)
-    default:
-      guard !centralManager.isScanning else { return }
-
-      // The Viiiiva won't respond to discovery for the non-standard Viiiiva
-      // service (identified by CBUUID.vivaService).  Look for the heart rate
-      // monitor service instead, and then connect and perform service
-      // discovery.
-      //
-      // Scanning continues until `didDiscoverVivaService` finds the Viiiiva
-      // service.
-      store.state.message = .verboseError("scanning for Viiiiva, make sure it's being worn...")
-      centralManager.scanForPeripherals(withServices: [CBUUID.heartRateService], options: nil)
+    case .byUuidWithFallback(let uuid):
+      retrievePeripheral(by: uuid)
+        .sink { [weak self] peripheral in
+          guard let self = self else { return }
+          guard let peripheral = peripheral else {
+            // Fall back to a scan.
+            self.scanForViiiiva()
+            return
+          }
+          self.didFindPeripheral(peripheral)
+        }
+        .store(in: &cancellable)
+    case .firstDiscovered:
+      scanForViiiiva()
     }
   }
 
@@ -449,6 +483,10 @@ enum DeviceCriteria {
 
   /// Connect to the BLE device with the specified BLE UUUID.
   case byUuid(UUID)
+
+  /// Attempt to connect to the BLE device with the specified UUID, falling
+  /// back to a scan if the requested device was not found.
+  case byUuidWithFallback(UUID)
 }
 
 extension BluetoothPeripheral {
@@ -460,6 +498,8 @@ extension BluetoothPeripheral {
     switch criteria {
     case .byUuid(let uuid):
       return uuid == self.identifier
+    case .byUuidWithFallback(_):
+      return true
     case .firstDiscovered:
       return true
     }

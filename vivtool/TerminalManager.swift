@@ -37,10 +37,7 @@ class TerminalManager<Stream: TextOutputStream> {
   private var standardOutput: Stream
   private var standardError: Stream
 
-  init(
-    store: Store, standardOutput: Stream,
-    standardError: Stream
-  ) {
+  init(store: Store, standardOutput: Stream, standardError: Stream) {
     self.store = store
     self.standardOutput = standardOutput
     self.standardError = standardError
@@ -89,36 +86,30 @@ class TerminalManager<Stream: TextOutputStream> {
 
       switch command {
       case let list as VivtoolCommand.List:
-        verbose = list.common.verbose
+        updateFromCommonOptions(list.common)
         store.dispatch { (state) in
-          if let uuid = list.common.uuid {
-            state.deviceCriteria = .byUuid(uuid)
-          }
+          state.setFromOptions(list.common)
           state.vivCommandQueue.append(.downloadDirectory)
         }
       case let copy as VivtoolCommand.Copy:
-        verbose = copy.common.verbose
+        updateFromCommonOptions(copy.common)
         guard let index = parseIndex(from: copy.file) else {
           VivtoolCommand.exit(withError: TerminalError.invalidSourceFile(copy.file))
         }
         self.destinationFile = copy.destinationFile()
 
         store.dispatch { (state) in
-          if let uuid = copy.common.uuid {
-            state.deviceCriteria = .byUuid(uuid)
-          }
+          state.setFromOptions(copy.common)
           state.vivCommandQueue.append(.downloadFile(index: index))
         }
       case let delete as VivtoolCommand.Delete:
-        verbose = delete.common.verbose
+        updateFromCommonOptions(delete.common)
         guard let index = parseIndex(from: delete.file) else {
           VivtoolCommand.exit(withError: TerminalError.invalidSourceFile(delete.file))
         }
 
         store.dispatch { (state) in
-          if let uuid = delete.common.uuid {
-            state.deviceCriteria = .byUuid(uuid)
-          }
+          state.setFromOptions(delete.common)
           state.vivCommandQueue.append(.deleteFile(index: index))
         }
       default:
@@ -129,6 +120,10 @@ class TerminalManager<Stream: TextOutputStream> {
     } catch {
       VivtoolCommand.exit(withError: error)
     }
+  }
+
+  func updateFromCommonOptions(_ options: VivtoolCommand.CommonOptions) {
+    verbose = options.verbose
   }
 
   // MARK: Renderers
@@ -234,6 +229,16 @@ func makeFilename(for entry: VLDirectoryEntry) -> String {
 /// - Returns: The parsed index or nil.
 func parseIndex(from filename: String) -> UInt16? {
   UInt16(filename.prefix(4), radix: 16)
+}
+
+extension State {
+  fileprivate func setFromOptions(_ options: VivtoolCommand.CommonOptions) {
+    if let uuid = options.uuid {
+      deviceCriteria = .byUuid(uuid)
+    } else if let uuid = lastConnectedDevice {
+      deviceCriteria = .byUuidWithFallback(uuid)
+    }
+  }
 }
 
 /// Defines the subcommands and their options.

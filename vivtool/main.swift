@@ -27,8 +27,10 @@ protocolManager.delegate = vivManager
 let terminalManager = TerminalManager(
   store: store, standardOutput: FileOutputStream(FileHandle.standardOutput),
   standardError: FileOutputStream(FileHandle.standardError))
+let userDefaultsManager = UserDefaultsManager(store: store, userDefaults: UserDefaults.standard)
 
 bluetoothManager.connect()
+userDefaultsManager.connect()
 terminalManager.connect()
 vivManager.connect()
 

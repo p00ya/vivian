@@ -73,7 +73,10 @@ characters.
 .Pp
 Without this option,
 .Nm
-will run a (slow) Bluetooth LE scan for heart rate monitors, and will connect
+will attempt to use the UUID of the last known Viiiiva device (stored in user
+preferences).  If no previous UUID was recorded, or it cannot be found,
+.Nm
+runs a (slow) Bluetooth LE scan for heart rate monitors, and will connect
 to the first peripheral it discovers that supports the Viiiiva service.
 .El
 .Ss ls command
@@ -130,6 +133,8 @@ from the Viiiiva device.
 .Nm
 and its manual page were written by
 .An Dean Scarff.
+.Sh SEE ALSO
+.Xr defaults 1
 .Sh BUGS
 Report bugs via the project website:
 .Lk https://github.com/p00ya/vivian

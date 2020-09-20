@@ -80,4 +80,9 @@ class State {
   ///
   /// The tuple consists of the file index and the deletion success.
   @Passthrough var deletedFile: (UInt16, Bool)
+
+  /// UUID of the last Viiiva to be connected.
+  ///
+  /// This state is persisted between invocations, via UserDefaults.
+  @Published var lastConnectedDevice: UUID?
 }
