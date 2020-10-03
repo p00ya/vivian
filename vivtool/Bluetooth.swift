@@ -151,7 +151,3 @@ extension CBCharacteristic: BluetoothCharacteristic {
   /// Set of bluetooth types consistent with Self.
   public typealias Bluetooth = CoreBluetoothTypes
 }
-
-public protocol BluetoothPeripheralDelegate {
-  associatedtype Bluetooth: BluetoothTyping
-}

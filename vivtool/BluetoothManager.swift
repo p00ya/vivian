@@ -365,6 +365,18 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     store.dispatch { $0.characteristicWrite = value }
   }
 
+  func peripheral(
+    _ peripheral: Bluetooth.Peripheral, didWriteValueFor characteristic: Bluetooth.Characteristic,
+    error: Error?
+  ) {
+    guard error == nil else {
+      didConnectionError(error!)
+      return
+    }
+
+    store.dispatch { $0.popWriteViiiivaValueCommand() }
+  }
+
   public func peripheral(
     _ peripheral: Bluetooth.Peripheral, didUpdateNotificationStateFor: Bluetooth.Characteristic,
     error: Error?
@@ -444,6 +456,12 @@ public class BluetoothManager: GenericBluetoothManager<CoreBluetoothTypes>,
   }
 
   @objc public override func peripheral(
+    _ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?
+  ) {
+    super.peripheral(peripheral, didWriteValueFor: characteristic, error: error)
+  }
+
+  @objc public override func peripheral(
     _ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic,
     error: Error?
   ) {
@@ -481,6 +499,20 @@ extension State {
   fileprivate func popCommand(_ command: BluetoothCommand) {
     if let top = bluetoothCommandStack.last, top == command {
       bluetoothCommandStack.removeLast()
+    }
+  }
+
+  /// Conditionally pops a bluetooth command from the stack.
+  ///
+  /// If the top (last element) of the stack is `.writeViiiivaValue`, pop it.
+  fileprivate func popWriteViiiivaValueCommand() {
+    if let top = bluetoothCommandStack.last {
+      switch top {
+      case .writeViiiivaValue(_):
+        bluetoothCommandStack.removeLast()
+      default:
+        break
+      }
     }
   }
 
@@ -530,15 +562,15 @@ extension BluetoothPeripheral {
 extension CBUUID {
   /// Bluetooth UUID used by Viiiiva heart rate monitors for a non-standard
   /// service.
-  fileprivate static let vivaService = CBUUID(string: "5B774111-D526-7B9A-4AE7-E59D015D79ED")
+  static let vivaService = CBUUID(string: "5B774111-D526-7B9A-4AE7-E59D015D79ED")
 
   /// Bluetooth UUID used by Viiiiva heart rate monitors for a non-standard
   /// characteristic.
-  fileprivate static let vivaCharacteristic = CBUUID(
+  static let vivaCharacteristic = CBUUID(
     string: "5B774321-D526-7B9A-4AE7-E59D015D79ED")
 
   /// Identifier for the standard GATT heart rate monitor service.
   ///
   /// See: https://www.bluetooth.com/specifications/gatt/services/
-  fileprivate static let heartRateService = CBUUID(string: "180D")
+  static let heartRateService = CBUUID(string: "180D")
 }
