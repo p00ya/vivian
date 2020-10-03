@@ -25,10 +25,8 @@ import Dispatch
 /// ## Applying mutations
 ///
 /// Reducers (mutations of the application state) can be applied directly
-/// as closures, or may be encapsulated in `Action`s to decouple the
-/// reducer logic from the caller.  The application state may change
-/// between the time the reducer was dispatched and when the reducer is
-/// run.
+/// as closures.  The application state may change between the time the reducer
+/// was dispatched and when the reducer is run.
 ///
 /// As a special case, the `@Passthrough` properties of `state` can be written
 /// to directly without dispatching via the `Store`.
@@ -66,15 +64,6 @@ struct Store {
   /// The queue *must* execute tasks serially.
   let dispatchQueue: DispatchQueue
 
-  /// Schedules the given action to be applied to the application state.
-  ///
-  /// - Parameter action: The action to apply.
-  func dispatch(action: Action) {
-    dispatchQueue.async {
-      action.reduce(self.state)
-    }
-  }
-
   /// Schedules a mutation to the application state.
   ///
   /// - Parameter reducer: A function to mutate the state.  Must be
@@ -94,15 +83,4 @@ struct Store {
   {
     return state[keyPath: keyPath].receive(on: dispatchQueue)
   }
-}
-
-/// Encapsulates an update to the application state.
-protocol Action {
-  /// Mutates the state.
-  ///
-  /// Must be side-effect free: only `state` should be mutated, and it
-  /// must be mutated synchronously on the calling thread.
-  ///
-  /// - Parameter state: The state to mutate.
-  func reduce(_ state: State)
 }
