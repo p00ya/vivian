@@ -13,6 +13,7 @@
 		284F9931247BA2FE00622114 /* BurstTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 284F9930247BA2FE00622114 /* BurstTests.mm */; };
 		2868E2A32516E9290024DCE1 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */; };
 		2868E2A42516E9290024DCE1 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */; };
+		2868E2C52528171F0024DCE1 /* UserDefaultsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2C42528171F0024DCE1 /* UserDefaultsManagerTests.swift */; };
 		2878BDAB25045C9300CA3CA7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAA25045C9300CA3CA7 /* main.swift */; };
 		2878BDB02504769900CA3CA7 /* manager_objc_bridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */; };
 		2878BDB32505021600CA3CA7 /* ManagerObjcBridgeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDB22505021600CA3CA7 /* ManagerObjcBridgeTests.m */; };
@@ -104,6 +105,7 @@
 		2828CD6B250E3F55008894BA /* TerminalManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalManagerTests.swift; sourceTree = "<group>"; };
 		284F9930247BA2FE00622114 /* BurstTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BurstTests.mm; sourceTree = "<group>"; };
 		2868E2A22516E9290024DCE1 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		2868E2C42528171F0024DCE1 /* UserDefaultsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManagerTests.swift; sourceTree = "<group>"; };
 		2878BDA825045C9300CA3CA7 /* vivtool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vivtool; sourceTree = BUILT_PRODUCTS_DIR; };
 		2878BDAA25045C9300CA3CA7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = manager_objc_bridge.mm; sourceTree = "<group>"; };
@@ -210,8 +212,9 @@
 		2828CD61250E3E31008894BA /* vivtoolTests */ = {
 			isa = PBXGroup;
 			children = (
-				2828CD6B250E3F55008894BA /* TerminalManagerTests.swift */,
 				28B1E1752515AF08004F2AEC /* StringOutputStream.swift */,
+				2828CD6B250E3F55008894BA /* TerminalManagerTests.swift */,
+				2868E2C42528171F0024DCE1 /* UserDefaultsManagerTests.swift */,
 			);
 			path = vivtoolTests;
 			sourceTree = "<group>";
@@ -526,6 +529,7 @@
 			files = (
 				28B1E16C25157762004F2AEC /* Passthrough.swift in Sources */,
 				2828CD6C250E3F55008894BA /* TerminalManagerTests.swift in Sources */,
+				2868E2C52528171F0024DCE1 /* UserDefaultsManagerTests.swift in Sources */,
 				28B1E17125157773004F2AEC /* Store.swift in Sources */,
 				28B1E1772515AF08004F2AEC /* StringOutputStream.swift in Sources */,
 				2868E2A42516E9290024DCE1 /* UserDefaultsManager.swift in Sources */,
