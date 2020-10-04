@@ -77,7 +77,7 @@ class ManagerTests: XCTestCase {
 
   func testDownloadFile() throws {
     var selfRef = self
-    var manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
+    let manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
     defer { manager.deinitialize() }
 
     manager.downloadFile(index: 0x1234)
@@ -132,7 +132,7 @@ class ManagerTests: XCTestCase {
 
   func testDownloadDirectory() throws {
     var selfRef = self
-    var manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
+    let manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
     defer { manager.deinitialize() }
 
     manager.downloadDirectory()
@@ -211,7 +211,7 @@ class ManagerTests: XCTestCase {
 
   func testEraseFile() throws {
     var selfRef = self
-    var manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
+    let manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
     defer { manager.deinitialize() }
 
     manager.eraseFile(index: 1)
@@ -238,7 +238,7 @@ class ManagerTests: XCTestCase {
 
   func testSetTime() throws {
     var selfRef = self
-    var manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
+    let manager = VLCProtocolManager.init(ctx: &selfRef, delegate: delegate)
     defer { manager.deinitialize() }
 
     manager.setTime(posixTime: 0x1234_5678)
