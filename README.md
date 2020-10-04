@@ -32,7 +32,7 @@ brew install --HEAD p00ya/tap/vivtool
 
 The Viiiiva supports "Activity Logging", which allows sensor data to be stored on the device in an activity log when no Bluetooth device is connected.  Later, the activity logs may be downloaded as .FIT files over Bluetooth.
 
-4iiii's apps download the .FIT files using a non-standard Bluetooth GATT characteristic with service UUID `5b774111d5267b9a4ae7e59d015d79ed`.  The GATT characteristic is used as a transport for a non-standard protocol resembling ANT-FS.  Fitness apps relying on the standard Bluetooth Heart Rate Service cannot download the Viiiiva's activity logs.
+4iiii's apps download the .FIT files using a non-standard Bluetooth GATT characteristic with service UUID `5b774111d5267b9a4ae7e59d015d79ed` (`5B774111-D526-7B9A-4AE7-E59D015D79ED`).  The GATT characteristic is used as a transport for a non-standard protocol resembling ANT-FS.  Fitness apps relying on the standard Bluetooth Heart Rate Service cannot download the Viiiiva's activity logs.
 
 ### Design Goals
 
