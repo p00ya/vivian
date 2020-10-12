@@ -20,11 +20,26 @@ $ vivtool rm 0001.fit
 
 ## Installation
 
+### Homebrew
+
 The `vivtool` command can be installed using [Homebrew](https://brew.sh/) with a custom tap:
 
 ```sh
 brew install --HEAD p00ya/tap/vivtool
 ```
+
+### Github releases
+
+A precompiled binary can be downloaded from the github releases page.  Some additional commands must be run for macOS's security system to permit this binary to run.
+
+```sh
+curl -LO https://github.com/p00ya/vivian/releases/latest/download/vivtool.tar.xz
+tar -xf vivtool.tar.xz --strip-components 3 usr/local/bin/vivtool
+xattr -r -d com.apple.quarantine vivtool
+codesign -s "-" -v vivtool
+```
+
+Without these extra steps, macOS's "Gatekeeper" system will pop up a dialog saying "vivtool cannot be opened because the developer cannot be verified" or "vivtool cannot be opened because Apple cannot check it for malicious software".
 
 ## Technical Design
 
