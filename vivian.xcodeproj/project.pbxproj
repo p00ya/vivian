@@ -16,6 +16,7 @@
 		2868E2C52528171F0024DCE1 /* UserDefaultsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2C42528171F0024DCE1 /* UserDefaultsManagerTests.swift */; };
 		2868E2C7252828110024DCE1 /* VivManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2C6252828110024DCE1 /* VivManagerTests.swift */; };
 		2868E2C92528790F0024DCE1 /* BluetoothManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2868E2C82528790F0024DCE1 /* BluetoothManagerTests.swift */; };
+		2878B4AC2535AA6100325D24 /* LICENSE.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2878B4AB2535AA6100325D24 /* LICENSE.txt */; };
 		2878BDAB25045C9300CA3CA7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAA25045C9300CA3CA7 /* main.swift */; };
 		2878BDB02504769900CA3CA7 /* manager_objc_bridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */; };
 		2878BDB32505021600CA3CA7 /* ManagerObjcBridgeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2878BDB22505021600CA3CA7 /* ManagerObjcBridgeTests.m */; };
@@ -88,6 +89,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		2878B4AA2535AA1C00325D24 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /share/doc/vivtool;
+			dstSubfolderSpec = 0;
+			files = (
+				2878B4AC2535AA6100325D24 /* LICENSE.txt in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		2878BDA625045C9300CA3CA7 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,6 +121,7 @@
 		2868E2C42528171F0024DCE1 /* UserDefaultsManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManagerTests.swift; sourceTree = "<group>"; };
 		2868E2C6252828110024DCE1 /* VivManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VivManagerTests.swift; sourceTree = "<group>"; };
 		2868E2C82528790F0024DCE1 /* BluetoothManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManagerTests.swift; sourceTree = "<group>"; };
+		2878B4AB2535AA6100325D24 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		2878BDA825045C9300CA3CA7 /* vivtool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vivtool; sourceTree = BUILT_PRODUCTS_DIR; };
 		2878BDAA25045C9300CA3CA7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2878BDAF2504769900CA3CA7 /* manager_objc_bridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = manager_objc_bridge.mm; sourceTree = "<group>"; };
@@ -246,6 +258,7 @@
 		287F4E35246F964B00640033 = {
 			isa = PBXGroup;
 			children = (
+				2878B4AB2535AA6100325D24 /* LICENSE.txt */,
 				287F4E79246F99E600640033 /* README.md */,
 				2878BDA925045C9300CA3CA7 /* vivtool */,
 				2828CD61250E3E31008894BA /* vivtoolTests */,
@@ -415,6 +428,7 @@
 				2878BDA425045C9300CA3CA7 /* Sources */,
 				2878BDA525045C9300CA3CA7 /* Frameworks */,
 				2878BDA625045C9300CA3CA7 /* CopyFiles */,
+				2878B4AA2535AA1C00325D24 /* CopyFiles */,
 			);
 			buildRules = (
 			);
