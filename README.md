@@ -8,14 +8,37 @@ Vivian is not endorsed by 4iiii.  It has been tested with a Viiiiva running firm
 
 Vivian does *not* expose generic Bluetooth heart rate monitor (HRM) functionality: you can't use it for realtime heart rate or RRI monitoring.  There are many other fitness apps that can be used for realtime monitoring.
 
+Currently, the sole end-user product of the Vivian project is `vivtool`, a macOS command-line interface for listing and downloading .FIT activity logs from a Viiiiva heart rate monitor.
+
 ## Usage
 
-`vivtool` is a macOS command-line interface for listing and downloading .FIT activity logs from a Viiiiva heart rate monitor.
+`vivtool` is a command-line interface, which means you must run the program from macOS's Terminal.app or similar terminal software.
+
+List all activity logs on the Viiiiva:
 
 ```sh
 $ vivtool ls -l
+650  2020-09-20T12:12:07Z  0001.fit
+614  2020-09-20T05:12:17Z  0002.fit
+471  2020-09-19T12:44:29Z  0003.fit
+```
+
+Copy an activity log from the Viiiiva to the current directory:
+
+```sh
 $ vivtool cp 0001.fit ./
+```
+
+Remove an activity log from the Viiiiva:
+
+```sh
 $ vivtool rm 0001.fit
+```
+
+For a complete reference, consult the manual page:
+
+```sh
+$ man vivtool
 ```
 
 ## Installation
