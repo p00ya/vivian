@@ -20,6 +20,8 @@ $ vivtool rm 0001.fit
 
 ## Installation
 
+The `vivtool` command requires macOS 10.15 (Catalina) or later to run.  Choose one of the options for installation below.
+
 ### Homebrew
 
 The `vivtool` command can be installed using [Homebrew](https://brew.sh/) with a custom tap:
@@ -30,16 +32,36 @@ brew install --HEAD p00ya/tap/vivtool
 
 ### Github releases
 
-A precompiled binary can be downloaded from the github releases page.  Some additional commands must be run for macOS's security system to permit this binary to run.
+A precompiled binary can be downloaded from the github releases page.  To download, extract, and authorize the executable to run, run these commands:
 
 ```sh
 curl -LO https://github.com/p00ya/vivian/releases/latest/download/vivtool.tar.xz
-tar -xf vivtool.tar.xz --strip-components 3 usr/local/bin/vivtool
-xattr -r -d com.apple.quarantine vivtool
-codesign -s "-" -v vivtool
+tar -xf vivtool.tar.xz --strip-components 1
+xattr -d com.apple.quarantine bin/vivtool
+codesign -s "-" -v bin/vivtool
 ```
 
-Without these extra steps, macOS's "Gatekeeper" system will pop up a dialog saying "vivtool cannot be opened because the developer cannot be verified" or "vivtool cannot be opened because Apple cannot check it for malicious software".
+The last two commands remove the quarantine flag and sign the executable for local use.  Without these extra steps, macOS's "Gatekeeper" system will pop up a dialog saying "vivtool cannot be opened because the developer cannot be verified" or "vivtool cannot be opened because Apple cannot check it for malicious software".
+
+The files can then be copied to system paths:
+
+```sh
+install -p bin/vivtool /usr/local/bin/
+install -d /usr/local/share/man/man1/
+install -p share/man/man1/vivtool.1 /usr/local/share/man/man1/
+```
+
+### Installation from source
+
+You can clone the git repository and build the project with Xcode.  It will require Xcode 11.4 or later to be installed.
+
+```sh
+git clone https://github.com/p00ya/vivian.git
+cd vivian
+xcodebuild install -scheme vivtool -configuration Release DSTROOT=/usr/local
+```
+
+Xcode will install the executable and manual page in the `/usr/local` hierarchy if you have permission to write to that directory.  Alternatively, you can change the `DSTROOT` parameter to stage it elsewhere.
 
 ## Technical Design
 
