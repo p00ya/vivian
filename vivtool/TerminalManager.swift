@@ -323,7 +323,7 @@ extension VivtoolCommand {
     }
   }
 
-  /// Validates a Viiiva filename.
+  /// Validates a Viiiiva filename.
   ///
   /// - Parameter file: The filename to validate.
   /// - Returns: True if the filename was valid.
