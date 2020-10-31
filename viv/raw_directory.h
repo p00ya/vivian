@@ -33,7 +33,7 @@
 /// ANT-FS style directory header.
 ///
 /// This struct is intended for type-punning.  It must be packed and POD.
-struct __attribute__((packed)) VLDirectoryHeader {
+struct __attribute__((packed)) VLRawDirectoryHeader {
   /// Directory header version.
   uint8_t version;
 
@@ -52,7 +52,7 @@ struct __attribute__((packed)) VLDirectoryHeader {
   /// Always 0 for Viiiiva.
   uint8_t reserved_8_[4];
 };
-typedef struct VLDirectoryHeader VLDirectoryHeader;
+typedef struct VLRawDirectoryHeader VLDirectoryHeader;
 
 /// ANT-FS style directory entry.
 ///

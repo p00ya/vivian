@@ -81,24 +81,39 @@ private:
   VLRawDirectoryEntry const entry_;
 };
 
+/// Immutable wrapper for reading a directory header.
+class DirectoryHeader {
+public:
+  explicit DirectoryHeader(VLRawDirectoryHeader header) noexcept
+      : header_(::std::move(header)) {}
+
+  /// Returns the Viiiiva's clock time as a POSIX timestamp.
+  time_t time() const {
+    return VLGetPosixTimeFromViva(OSReadLittleInt32(header_.time, 0));
+  }
+
+private:
+  VLRawDirectoryHeader const header_;
+};
+
 /// Encapsulates the entries of a directory.
 class Directory {
 public:
   class Reader;
 
   explicit Directory(
-      VLDirectoryHeader header,
+      VLRawDirectoryHeader header,
       ::std::map<uint16_t, DirectoryEntry> entries) noexcept
       : header_(::std::move(header)), entries_(::std::move(entries)) {}
 
-  const VLDirectoryHeader &header() const { return header_; }
+  const DirectoryHeader &header() const { return header_; }
 
   const ::std::map<uint16_t, DirectoryEntry> &entries() const {
     return entries_;
   }
 
 private:
-  VLDirectoryHeader header_;
+  DirectoryHeader header_;
   ::std::map<uint16_t, DirectoryEntry> entries_;
 };
 
@@ -119,7 +134,7 @@ public:
 
 private:
   ::std::map<uint16_t, DirectoryEntry> entries_;
-  VLDirectoryHeader hdr_;
+  VLRawDirectoryHeader hdr_;
   uint8_t const *src_;
   uint8_t const *const end_;
   bool valid_;
