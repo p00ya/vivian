@@ -207,7 +207,7 @@ extension State {
   /// Removes the front of the command queue.
   ///
   /// - Parameter command: The command which must be at the front
-  ///    of the queue.
+  ///     of the queue.
   fileprivate func dequeCommand(_ command: VivCommand) {
     assert(vivCommandQueue.first! == command)
     vivCommandQueue.removeFirst()

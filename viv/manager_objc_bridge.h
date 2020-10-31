@@ -147,9 +147,8 @@ extern const NSErrorDomain VLOManagerErrorDomain;
 /// The manager will send a write request via the delegate, then call
 /// \c didStartWaiting.  After receiving the expected response and
 /// value notifications, the manager will parse the directory.  It will then
-/// call did_parse_directory_entry once for each valid entry found, then
-/// \c didFinishParsingDirectory.  Finally, it will call
-/// \c didFinishWaiting.
+/// call \c didParseDirectoryEntry once for each valid entry found, then
+/// \c didFinishParsingDirectory.  Finally, it will call \c didFinishWaiting.
 - (void)downloadDirectory;
 
 /// Commands the manager to download a file.
@@ -157,8 +156,7 @@ extern const NSErrorDomain VLOManagerErrorDomain;
 /// The manager will send a write request via the delegate, then call
 /// \c didStartWaiting.  After receiving the expected response
 /// and value notifications, the manager will parse the file response.  It will
-/// then call \c didDownloadFile.  Finally, it will call
-/// \c didFinishWaitingForResponse.
+/// then call \c didDownloadFile.  Finally, it will call \c didFinishWaiting.
 - (void)downloadFile:(uint16_t)index;
 
 /// Commands the manager to download a file.
