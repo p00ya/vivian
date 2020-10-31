@@ -17,10 +17,10 @@ Currently, the sole end-user product of the Vivian project is `vivtool`, a macOS
 List all activity logs on the Viiiiva:
 
 ```sh
-$ vivtool ls -l
-650  2020-09-20T12:12:07Z  0001.fit
-614  2020-09-20T05:12:17Z  0002.fit
-471  2020-09-19T12:44:29Z  0003.fit
+$ vivtool ls -l -h
+650 bytes       2020-09-20, 12:12       0001.fit
+614 bytes       2020-09-20, 05:12       0002.fit
+471 bytes       2020-09-19, 12:44       0003.fit
 ```
 
 Copy an activity log from the Viiiiva to the current directory:
@@ -38,7 +38,8 @@ $ vivtool rm 0001.fit
 Synchronize the Viiiiva's internal clock:
 
 ```sh
-$ vivtool date -s now
+$ vivtool date -h -s now
+2020-10-31, 12:57
 ```
 
 For a complete reference, consult the manual page:
