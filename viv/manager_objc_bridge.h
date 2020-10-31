@@ -64,6 +64,14 @@
 /// Called when there was an error.
 - (void)didError:(NSError *)error;
 
+/// Called when the device clock is read from the directory.
+///
+/// The Viiiiva publishes its clock as part of the directory header.  The
+/// manager will call this after VLManagerDownloadDirectory.
+///
+/// \param posixTime Seconds since 1970-01-01 according to the Viiiiva's clock.
+- (void)didParseClock:(time_t)posixTime;
+
 /// Called for each directory entry encountered in the directory.
 ///
 /// The manager will call this after VLManagerDownloadDirectory.
@@ -86,6 +94,10 @@
 /// \param index The file's index.
 - (void)didEraseFile:(uint16_t)index successfully:(BOOL)ok;
 
+/// Called when the manager finishes setting the clock.
+///
+/// \param ok \c YES if the clock was set.
+- (void)didSetTime:(BOOL)ok;
 @end
 
 /// Error domain for the libviv Manager.
@@ -164,15 +176,14 @@ extern const NSErrorDomain VLOManagerErrorDomain;
 /// The manager will send a write request via the delegate, then call
 /// \c didStartWaiting.  After receiving the expected response
 /// and value notifications, the manager will parse the erase response.  It will
-/// then call did_erase_file.  Finally, it will call
-/// \c didFinishWaiting.
+/// then call \c didEraseFile.  Finally, it will call \c didFinishWaiting.
 - (void)eraseFile:(uint16_t)index;
 
 /// Commands the manager to set the Viiiiva's time.
 ///
 /// The manager will send a write request via the delegate, then call
 /// \c didStartWaiting.  After receiving the expected response,
-/// it will call \c didFinishWaiting.
+/// it will call \c didSetTime and then \c didFinishWaiting.
 - (void)setTime:(time_t)posixTime;
 
 @end

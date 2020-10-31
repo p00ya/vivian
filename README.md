@@ -35,6 +35,12 @@ Remove an activity log from the Viiiiva:
 $ vivtool rm 0001.fit
 ```
 
+Synchronize the Viiiiva's internal clock:
+
+```sh
+$ vivtool date -s now
+```
+
 For a complete reference, consult the manual page:
 
 ```sh

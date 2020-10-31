@@ -61,6 +61,16 @@ class VivManagerTests: XCTestCase {
     wait(for: [protocolManager.expectation], timeout: Self.timeout)
     XCTAssertEqual(protocolManager.commands, [.eraseFile(0x1337)])
   }
+
+  func testSetTime() {
+    manager!.connect()
+    let posixTime = 1_577_836_800  // 2020-01-01
+    let date = Date(timeIntervalSince1970: TimeInterval(posixTime))
+    store.state.vivCommandQueue.append(.setTime(date))
+
+    wait(for: [protocolManager.expectation], timeout: Self.timeout)
+    XCTAssertEqual(protocolManager.commands, [.setTime(posixTime)])
+  }
 }
 
 /// Fake implementation of `VLProtocolManager` for testing.

@@ -90,6 +90,8 @@ class VivManager: NSObject {
       self.downloadFile(index: index)
     case .deleteFile(let index):
       self.deleteFile(index: index)
+    case .setTime(let time):
+      self.setTime(time)
     case nil:
       // Queue is empty, do nothing.
       break
@@ -138,6 +140,15 @@ class VivManager: NSObject {
     self.isBusy = true
     self.protocolManager.eraseFile(index)
   }
+
+  func setTime(_ time: Date) {
+    assert(!self.isBusy)
+
+    self.isBusy = true
+    // Rounding upward before truncation will compensate for the lag in actually
+    // updating the device.
+    self.protocolManager.setTime(time_t(ceil(time.timeIntervalSince1970)))
+  }
 }
 
 extension VivManager: VLProtocolManagerDelegate {
@@ -160,6 +171,12 @@ extension VivManager: VLProtocolManagerDelegate {
       store.message = .error(error.localizedDescription)
       store.exitStatus = .conditionError
       store.shouldTerminate = true
+    }
+  }
+
+  func didParseClock(_ posixTime: time_t) {
+    store.dispatch { (store) in
+      store.clock = posixTime
     }
   }
 
@@ -189,6 +206,19 @@ extension VivManager: VLProtocolManagerDelegate {
       state.dequeCommand(.deleteFile(index: index))
     }
   }
+
+  func didSetTime(_ ok: Bool) {
+    store.dispatch { (state) in
+      guard let currentCommand = state.vivCommandQueue.first else { return }
+      switch currentCommand {
+      case .setTime(_):
+        state.dequeCommand(currentCommand)
+      default:
+        assertionFailure("unexpected didSetTime")
+        break
+      }
+    }
+  }
 }
 
 /// Commands to control `VivManager`.
@@ -201,6 +231,9 @@ public enum VivCommand: Equatable {
 
   /// Command to delete a single file.
   case deleteFile(index: UInt16)
+
+  /// Command to set the Viiiiva's clock to the given time.
+  case setTime(_ time: Date)
 }
 
 extension State {

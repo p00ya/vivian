@@ -24,7 +24,7 @@
 @implementation SetTimeCommandTests
 
 - (void)testMakeCommandPacket {
-  viv::SetTimeCommand cmd(0x12345678);
+  viv::SetTimeCommand cmd(0x12345678, [](bool) {});
   VLPacket const packet = cmd.MakeCommandPacket();
 
   XCTAssertEqual(packet.payload_length, 4);

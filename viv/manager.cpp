@@ -132,6 +132,7 @@ Manager::DownloadDirectory() {
       return;
     }
     Directory dir = reader.get();
+    delegate.DidParseClock(dir.header().time());
     for (const auto &pair : dir.entries()) {
       delegate.DidParseDirectoryEntry(pair.second.entry());
     }
@@ -177,9 +178,15 @@ Manager::EraseFile(uint16_t index) {
 void
 Manager::SetTime(time_t posix_time) {
   AssertNoRecursion busy(busy_);
+  command_.release();
+  // While this leaks delegate_ out of its unique_ptr, the response_ is owned by
+  // the Manager so will not outlive the delegate.
+  auto on_finish = [&delegate = *delegate_](bool success) {
+    delegate.DidSetTime(success);
+  };
   uint32_t viva_time = VLGetVivaTimeFromPosix(posix_time);
   response_.release();
-  command_.reset(new SetTimeCommand(viva_time));
+  command_.reset(new SetTimeCommand(viva_time, std::move(on_finish)));
 
   VLPacket packet = command_->MakeCommandPacket();
   WritePacket(packet);

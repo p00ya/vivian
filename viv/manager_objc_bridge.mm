@@ -87,6 +87,12 @@ public:
     }
   }
 
+  void DidParseClock(time_t posix_time) const override {
+    if ([delegate_ respondsToSelector:@selector(didParseClock:)]) {
+      [delegate_ didParseClock:posix_time];
+    }
+  }
+
   void DidParseDirectoryEntry(VLDirectoryEntry entry) const override {
     if ([delegate_ respondsToSelector:@selector(didParseDirectoryEntry:)]) {
       [delegate_ didParseDirectoryEntry:entry];
@@ -110,6 +116,12 @@ public:
   void DidEraseFile(uint16_t index, bool ok) const override {
     if ([delegate_ respondsToSelector:@selector(didEraseFile:successfully:)]) {
       [delegate_ didEraseFile:index successfully:ok];
+    }
+  }
+
+  void DidSetTime(bool ok) const override {
+    if ([delegate_ respondsToSelector:@selector(didSetTime:)]) {
+      [delegate_ didSetTime:ok];
     }
   }
 

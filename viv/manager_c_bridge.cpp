@@ -56,6 +56,12 @@ public:
     (*delegate_.did_error)(ctx_, code, msg.c_str());
   }
 
+  void DidParseClock(time_t posix_time) const override {
+    if (delegate_.did_parse_clock != nullptr) {
+      (*delegate_.did_parse_clock)(ctx_, posix_time);
+    }
+  }
+
   void DidParseDirectoryEntry(VLDirectoryEntry entry) const override {
     if (delegate_.did_parse_directory_entry != nullptr) {
       (*delegate_.did_parse_directory_entry)(ctx_, entry);
@@ -78,6 +84,12 @@ public:
   void DidEraseFile(uint16_t index, bool ok) const override {
     if (delegate_.did_erase_file != nullptr) {
       (*delegate_.did_erase_file)(ctx_, index, ok);
+    }
+  }
+
+  void DidSetTime(bool ok) const override {
+    if (delegate_.did_set_time != nullptr) {
+      (*delegate_.did_set_time)(ctx_, ok);
     }
   }
 

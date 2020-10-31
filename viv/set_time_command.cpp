@@ -45,6 +45,8 @@ SetTimeCommand::ReadPacket(VLPacket const &packet) {
 
 bool
 SetTimeCommand::MaybeFinish() const {
+  on_finish_(has_ack_);
+
   return has_ack_;
 }
 

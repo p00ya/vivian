@@ -52,6 +52,8 @@ public:
   virtual void
   DidError(VLManagerErrorCode code, ::std::string const &&msg) const = 0;
 
+  virtual void DidParseClock(time_t posix_time) const {}
+
   virtual void DidParseDirectoryEntry(VLDirectoryEntry entry) const {}
 
   virtual void DidFinishParsingDirectory() const {}
@@ -60,6 +62,8 @@ public:
   DidDownloadFile(uint16_t index, uint8_t const *data, size_t length) const {}
 
   virtual void DidEraseFile(uint16_t index, bool ok) const {}
+
+  virtual void DidSetTime(bool ok) const {}
 };
 
 class Manager {

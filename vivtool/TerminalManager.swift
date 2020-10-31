@@ -59,6 +59,13 @@ class TerminalManager<Stream: TextOutputStream> {
       }
       .store(in: &cancellable)
 
+    store.receive(\.$clock)
+      .sink { [weak self] (posixTime) in
+        guard let self = self, let command = self.command as? VivtoolCommand.Clock else { return }
+        self.renderClock(posixTime, withOptions: command)
+      }
+      .store(in: &cancellable)
+
     store.receive(\.$directory)
       .sink { [weak self] (directory) in
         guard let self = self, let command = self.command as? VivtoolCommand.List else { return }
@@ -68,7 +75,7 @@ class TerminalManager<Stream: TextOutputStream> {
 
     store.receive(\.$downloadedFile)
       .sink { [weak self] (downloadedFile) in
-        self?.renderDownloadedFile(downloadedFile.1)
+        self?.renderDownloadedFile(index: downloadedFile.0, data: downloadedFile.1)
       }
       .store(in: &cancellable)
 
@@ -112,6 +119,17 @@ class TerminalManager<Stream: TextOutputStream> {
           state.setFromOptions(delete.common)
           state.vivCommandQueue.append(.deleteFile(index: index))
         }
+      case let clock as VivtoolCommand.Clock:
+        updateFromCommonOptions(clock.common)
+        var vivCommands = [VivCommand]()
+        if let time = clock.parseTime() {
+          vivCommands.append(.setTime(time))
+        }
+        vivCommands.append(.downloadDirectory)
+        store.dispatch { (state) in
+          state.setFromOptions(clock.common)
+          state.vivCommandQueue.append(contentsOf: vivCommands)
+        }
       default:
         // Let ArgumentParser print help output.
         VivtoolCommand.main()
@@ -138,6 +156,21 @@ class TerminalManager<Stream: TextOutputStream> {
       message = m
     }
     print(message, to: &standardError)
+  }
+
+  func renderClock(_ posixTime: time_t, withOptions command: VivtoolCommand.Clock) {
+    let date = Date(timeIntervalSince1970: TimeInterval(posixTime))
+    var time: String
+    if command.humanReadable {
+      let timeFormatter = DateFormatter()
+      timeFormatter.dateStyle = .short
+      timeFormatter.timeStyle = .short
+      time = timeFormatter.string(from: date)
+    } else {
+      time = ISO8601DateFormatter().string(from: date)
+    }
+    print(time, to: &standardOutput)
+    store.dispatch { $0.shouldTerminate = true }
   }
 
   func renderDirectory(_ directory: [VLDirectoryEntry], withOptions command: VivtoolCommand.List) {
@@ -181,7 +214,7 @@ class TerminalManager<Stream: TextOutputStream> {
     print("\(fileSize)\t\(time)\t\(filename)", to: &standardOutput)
   }
 
-  private func renderDownloadedFile(_ data: Data) {
+  private func renderDownloadedFile(index: UInt16, data: Data) {
     do {
       // destinationFile is set to non-nil in run().
       try data.write(to: destinationFile!)
@@ -252,7 +285,7 @@ struct VivtoolCommand: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "vivtool",
     abstract: "A utility for interacting with Viiiiva devices.",
-    subcommands: [List.self, Copy.self, Delete.self],
+    subcommands: [List.self, Copy.self, Delete.self, Clock.self],
     helpNames: [.long, .customShort("?")])
 }
 
@@ -319,6 +352,40 @@ extension VivtoolCommand {
     mutating func validate() throws {
       guard isValidFilename(file) else {
         throw ValidationError("\(file) is not a valid Viiiiva filename.")
+      }
+    }
+  }
+
+  struct Clock: ParsableCommand {
+    static let configuration = CommandConfiguration(
+      commandName: "date", abstract: "Print or set the device clock.")
+
+    @OptionGroup var common: CommonOptions
+
+    @Flag(name: .customShort("h"), help: "Used localized time formats.")
+    var humanReadable = false
+
+    @Option(name: [.customShort("s"), .long], help: "Set the device clock to the given time.")
+    var time: String?
+
+    /// Parses the date option.
+    ///
+    /// If the `-h` flag is specified, the time will be parsed using the default
+    /// locale.  Without `-h`, it must be in ISO8601 time format.  It can also
+    /// be specified as the string `now` for the current time.
+    ///
+    /// - Returns: The parsed date, or `none`.
+    func parseTime() -> Date? {
+      guard let dateString = self.time else {
+        return .none
+      }
+
+      if dateString == "now" {
+        return Date()
+      } else if humanReadable {
+        return DateFormatter().date(from: dateString)
+      } else {
+        return ISO8601DateFormatter().date(from: dateString)
       }
     }
   }

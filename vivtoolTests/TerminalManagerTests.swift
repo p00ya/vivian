@@ -74,6 +74,13 @@ class TerminalManagerTests: XCTestCase {
     manager!.renderDirectory(Self.directoryEntries, withOptions: options)
     XCTAssertEqual(standardOutput.buffer, "64 bytes\t\(time)\t0001.fit\n")
   }
+
+  func testRenderClock() throws {
+    let options = try VivtoolCommand.Clock.parse([])
+
+    manager!.renderClock(1_577_836_800, withOptions: options)
+    XCTAssertEqual(standardOutput.buffer, "2020-01-01T00:00:00Z\n")
+  }
 }
 
 class TerminalManagerStaticTests: XCTestCase {
@@ -103,6 +110,12 @@ class TerminalManagerStaticTests: XCTestCase {
     XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm", "moo.fit"]))
     XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm", "0001.fit", "0002.fit"]))
     XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["rm"]))
+
+    _ = try VivtoolCommand.parseAsRoot(["date"])
+    _ = try VivtoolCommand.parseAsRoot(["date", "-h"])
+    _ = try VivtoolCommand.parseAsRoot(["date", "-s", "2020-01-01T00:00:00Z"])
+    _ = try VivtoolCommand.parseAsRoot(["date", "-s", "now"])
+    XCTAssertThrowsError(try VivtoolCommand.parseAsRoot(["date", "-l"]))
   }
 }
 

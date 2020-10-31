@@ -68,6 +68,11 @@ class State {
   /// The first element will be processed next.
   @Published var vivCommandQueue = [VivCommand]()
 
+  /// The time according to the Viiiiva's clock.
+  ///
+  /// Published when parsing the directory.
+  @Published var clock: time_t = 0
+
   /// All directory entries from the last directory download.
   @Published var directory = [VLDirectoryEntry]()
 

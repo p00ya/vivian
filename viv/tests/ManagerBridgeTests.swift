@@ -53,6 +53,9 @@ class ManagerTests: XCTestCase {
       did_error: { (p, err, _) in
         ManagerTests.logDelegateEvent(managerTests: p!, event: "didError: \(err)")
       },
+      did_parse_clock: { (p, posixTime) in
+        ManagerTests.logDelegateEvent(managerTests: p!, event: "didParseClock(\(posixTime))")
+      },
       did_parse_directory_entry: { (p, entry) in
         ManagerTests.logDelegateEvent(managerTests: p!, event: "didParseDirectoryEntry")
         ManagerTests.captureDirectoryEntry(managerTests: p!, entry: entry)
@@ -68,6 +71,10 @@ class ManagerTests: XCTestCase {
       did_erase_file: { (p, index, ok) in
         let ok = ok != 0
         ManagerTests.logDelegateEvent(managerTests: p!, event: "didEraseFile(\(index), \(ok))")
+      },
+      did_set_time: { (p, ok) in
+        let ok = ok != 0
+        ManagerTests.logDelegateEvent(managerTests: p!, event: "didSetTime(\(ok))")
       })
   }
 
@@ -198,6 +205,7 @@ class ManagerTests: XCTestCase {
     XCTAssertEqual(events.removeLast(), "didFinishWaiting")
     XCTAssertEqual(events.removeLast(), "didFinishParsingDirectory")
     XCTAssertEqual(events.removeLast(), "didParseDirectoryEntry")
+    XCTAssertEqual(events.removeLast(), "didParseClock(2649980946)")
     XCTAssert(events.isEmpty)
 
     XCTAssertEqual(directoryEntries.count, 1)
@@ -251,6 +259,7 @@ class ManagerTests: XCTestCase {
       manager.notifyValue(value: buffer.baseAddress!, length: buffer.count)
     }
     XCTAssertEqual(events.removeLast(), "didFinishWaiting")
+    XCTAssertEqual(events.removeLast(), "didSetTime(true)")
     XCTAssert(events.isEmpty)
   }
 }

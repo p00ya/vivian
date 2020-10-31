@@ -73,6 +73,15 @@ struct VLCProtocolManagerDelegate {
   void (*_Nullable did_error)(
       void *_Nullable ctx, VLManagerErrorCode code, char const *msg);
 
+  /// Called when the device clock is read from the directory.
+  ///
+  /// The Viiiiva publishes its clock as part of the directory header.  The
+  /// manager will call this after VLManagerDownloadDirectory.
+  ///
+  /// \param posix_time Seconds since 1970-01-01 according to the Viiiiva's
+  /// clock.
+  void (*_Nullable did_parse_clock)(void *_Nullable ctx, time_t posix_time);
+
   /// Called for each directory entry encountered in the directory.
   ///
   /// The manager will call this after VLManagerDownloadDirectory.
@@ -99,6 +108,11 @@ struct VLCProtocolManagerDelegate {
   /// \param index The file's index.
   /// \param ok Non-zero if the file was erased.
   void (*_Nullable did_erase_file)(void *_Nullable ctx, uint16_t index, int ok);
+
+  /// Called when the manager finishes setting the clock.
+  ///
+  /// \param ok Non-zero if the clock was set.
+  void (*_Nullable did_set_time)(void *_Nullable ctx, int ok);
 };
 typedef struct VLCProtocolManagerDelegate VLManagerDelegate;
 
@@ -196,7 +210,7 @@ extern void VLManagerEraseFile(VLCProtocolManager mgr, uint16_t index)
 ///
 /// The manager will send a write request via the delegate, then call
 /// \c did_start_waiting.  After receiving the expected response,
-/// it will call \c did_finish_waiting.
+/// it will call \c did_set_time and then \c did_finish_waiting.
 extern void VLManagerSetTime(VLCProtocolManager mgr, time_t posix_time)
     CF_SWIFT_NAME(VLCProtocolManager.setTime(self:posixTime:));
 

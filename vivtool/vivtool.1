@@ -12,7 +12,7 @@
 .\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 .\" See the License for the specific language governing permissions and
 .\" limitations under the License.
-.Dd Sep 15, 2020
+.Dd Oct 31, 2020
 .Dt VIVTOOL 1
 .Sh NAME
 .Nm vivtool
@@ -37,6 +37,11 @@
 .Op Fl v
 .Op Fl u Ar uuid
 .Ar file
+.Nm
+.Cm date
+.Op Fl v
+.Op Fl h
+.Op Fl s Ar time
 .Sh DESCRIPTION
 .Nm
 is a macOS command-line utility for downloading .FIT activity logs from a
@@ -129,6 +134,29 @@ overwritten without any confirmation or warning.
 Deletes
 .Ar file
 from the Viiiiva device.
+.Ss Cm date command
+.Nm
+.Cm date
+.Op Fl v
+.Op Fl u Ar uuid
+.Op Fl h
+.Op Fl s
+.Pp
+Prints the current time according to the Viiiiva device.
+.Bl -tag -width Ds
+.It Fl h
+Use localized time formats.
+.It Fl s Ar time
+Set the clock on the Viiiiva device to the specified time.  With the
+.Fl h
+flag, the time will be parsed according to the current locale.  Otherwise, it
+must be in the
+.Em ISO 8601
+time format.
+.Pp
+Alternatively, the time may always be specified as the string
+.Sq now
+to use the current time according to the local machine.
 .Sh AUTHOR
 .Nm
 and its manual page were written by

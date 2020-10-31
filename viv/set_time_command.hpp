@@ -29,7 +29,14 @@ namespace viv {
 /// Command for downloading a file.
 class SetTimeCommand : public Command {
 public:
-  explicit SetTimeCommand(uint32_t ant_time) noexcept : time_(ant_time) {}
+  /// Function to call once the file has been erased.
+  ///
+  /// The boolean parameter is true if the erase was successful, false
+  /// otherwise.
+  using OnFinishCallback = ::std::function<void(bool)>;
+
+  explicit SetTimeCommand(uint32_t ant_time, OnFinishCallback on_finish)
+    noexcept : on_finish_(std::move(on_finish)), time_(ant_time) {}
 
   VLPacket MakeCommandPacket() const override;
   int ReadPacket(VLPacket const &packet) override;
@@ -38,6 +45,8 @@ public:
   ::std::string name() const override { return "set time command"; }
 
 private:
+  OnFinishCallback const on_finish_;
+
   /// ANT+ time to send to Viiiiva.
   uint32_t const time_;
 
