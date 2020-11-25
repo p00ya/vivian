@@ -22,8 +22,6 @@ version: ~> 1.0
 
 os: osx
 osx_image:
-  - xcode11.4
-  - xcode11.6
   - xcode12
 language: objective-c
 xcode_project: vivian.xcodeproj

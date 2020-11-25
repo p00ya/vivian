@@ -83,7 +83,7 @@ install -p share/man/man1/vivtool.1 /usr/local/share/man/man1/
 
 ### Installation from source
 
-You can clone the git repository and build the project with Xcode.  It will require Xcode 11.4 or later to be installed.
+You can clone the git repository and build the project with Xcode.  It will require Xcode 12 to be installed (other Xcode versions may work but have not been tested).
 
 ```sh
 git clone https://github.com/p00ya/vivian.git
