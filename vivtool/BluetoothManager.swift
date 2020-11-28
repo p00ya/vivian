@@ -268,6 +268,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     }
   }
 
+  // swift-format-ignore: AlwaysUseLowerCamelCase
   func centralManager(
     _ central: Bluetooth.CentralManager, didDiscover peripheral: Bluetooth.Peripheral,
     advertisementData: [String: Any], rssi RSSI: NSNumber
@@ -406,6 +407,7 @@ public class BluetoothManager: GenericBluetoothManager<CoreBluetoothTypes>,
     super.centralManagerDidUpdateState(central)
   }
 
+  // swift-format-ignore: AlwaysUseLowerCamelCase
   @objc public override func centralManager(
     _ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
     advertisementData: [String: Any], rssi RSSI: NSNumber

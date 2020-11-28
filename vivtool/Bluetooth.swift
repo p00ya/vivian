@@ -107,6 +107,7 @@ public protocol BluetoothPeripheral: AnyObject {
   func discoverDescriptors(for characteristic: Characteristic)
   func readValue(for descriptor: CBDescriptor)
   func writeValue(_ data: Data, for descriptor: CBDescriptor)
+  // swift-format-ignore: AlwaysUseLowerCamelCase
   func openL2CAPChannel(_ PSM: CBL2CAPPSM)
 }
 

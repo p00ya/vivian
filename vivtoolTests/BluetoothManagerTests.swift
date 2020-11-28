@@ -182,6 +182,8 @@ protocol FakeCentralManagerDelegate {
   typealias Peripheral = Bluetooth.Peripheral
 
   func centralManagerDidUpdateState(_ central: CentralManager)
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
   func centralManager(
     _ central: CentralManager, didDiscover peripheral: Peripheral,
     advertisementData: [String: Any], rssi RSSI: NSNumber
@@ -308,6 +310,7 @@ class FakePeripheral: BluetoothPeripheral {
   func discoverDescriptors(for characteristic: Characteristic) {}
   func readValue(for descriptor: CBDescriptor) {}
   func writeValue(_ data: Data, for descriptor: CBDescriptor) {}
+  // swift-format-ignore: AlwaysUseLowerCamelCase
   func openL2CAPChannel(_ PSM: CBL2CAPPSM) {}
 }
 
