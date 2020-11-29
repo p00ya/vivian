@@ -38,6 +38,29 @@ jobs:
         restore-keys: |
           spm-${{ runner.os }}-${{ matrix.xcode }}-
           spm-${{ runner.os }}-
+    - name: Update Homebrew
+      run: |
+        brew update --preinstall
+        cat "$(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/"{clang,swift}-format.rb > .github/brew-formulae
+    - name: Configure Homebrew cache
+      uses: actions/cache@v2
+      with:
+        # brew --cache
+        path: |
+          ~/Library/Caches/Homebrew/clang-format--*
+          ~/Library/Caches/Homebrew/swift-format--*
+          ~/Library/Caches/Homebrew/downloads/*--clang-format*
+          ~/Library/Caches/Homebrew/downloads/*--swift-format*
+        key: brew-${{ hashFiles('.github/brew-formulae') }}
+        restore-keys: |
+          brew-
+    - name: Install Homebrew dependencies
+      run: |
+        env HOMEBREW_NO_AUTO_UPDATE=1 brew install clang-format swift-format
+    - name: Lint
+      run: |
+        find viv -name '*.[h,m,mm]' -exec clang-format -n '{}' '+'
+        swift-format lint --recursive vivtool vivtoolTests
     - name: Build and test
       run: |
         xcodebuild test -scheme vivtool -clonedSourcePackagesDirPath .spm -disableAutomaticPackageResolution
