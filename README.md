@@ -68,7 +68,7 @@ A precompiled binary can be downloaded from the github releases page.  To downlo
 curl -LO https://github.com/p00ya/vivian/releases/latest/download/vivtool.tar.xz
 tar -xf vivtool.tar.xz --strip-components 1
 xattr -d com.apple.quarantine bin/vivtool
-codesign -s "-" -v bin/vivtool
+codesign -f -s "-" -v bin/vivtool
 ```
 
 The last two commands remove the quarantine flag and sign the executable for local use.  Without these extra steps, macOS's "Gatekeeper" system will pop up a dialog saying "vivtool cannot be opened because the developer cannot be verified" or "vivtool cannot be opened because Apple cannot check it for malicious software".
