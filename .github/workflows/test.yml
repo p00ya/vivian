@@ -19,6 +19,7 @@ on:
   schedule:
     # Weekly on Thursdays at 03:13.
     - cron: '13 3 * * 4'
+  workflow_dispatch:
 
 jobs:
   test:
