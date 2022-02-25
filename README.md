@@ -50,7 +50,7 @@ $ man vivtool
 
 ## Installation
 
-The `vivtool` command requires macOS 10.15 (Catalina) or later to run.  Choose one of the options for installation below.
+The `vivtool` command requires macOS 11.0 (Big Sur) or later to run.  Choose one of the options for installation below.
 
 ### Homebrew
 
