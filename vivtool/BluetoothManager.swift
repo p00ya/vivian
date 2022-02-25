@@ -148,8 +148,10 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
   ///
   /// - Parameter service: The discovered Viiiiva service.
   private func didDiscoverVivaService(_ service: Bluetooth.Service) {
+    guard let peripheral = service.peripheral else {
+      return
+    }
     centralManager.stopScan()
-    let peripheral = service.peripheral
     viva = peripheral
     vivaService = service
     let name = peripheral.name

@@ -124,7 +124,7 @@ public protocol BluetoothService: AnyObject {
   typealias Service = Bluetooth.Service
 
   var uuid: CBUUID { get }
-  var peripheral: Peripheral { get }
+  var peripheral: Peripheral? { get }
   var isPrimary: Bool { get }
   var includedServices: [Service]? { get }
   var characteristics: [Characteristic]? { get }
@@ -141,7 +141,7 @@ public protocol BluetoothCharacteristic: AnyObject {
   typealias Service = Bluetooth.Service
 
   var uuid: CBUUID { get }
-  var service: Service { get }
+  var service: Service? { get }
   var properties: CBCharacteristicProperties { get }
   var value: Data? { get }
   var descriptors: [CBDescriptor]? { get }

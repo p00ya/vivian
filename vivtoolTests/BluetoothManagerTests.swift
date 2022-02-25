@@ -319,7 +319,7 @@ class FakeService: BluetoothService {
   typealias Bluetooth = FakeBluetoothTypes
 
   var uuid: CBUUID
-  var peripheral: Peripheral
+  var peripheral: Peripheral?
   var isPrimary = true
   var includedServices: [Service]?
   var characteristics: [Characteristic]? = []
@@ -347,7 +347,7 @@ class FakeCharacteristic: BluetoothCharacteristic {
   typealias Bluetooth = FakeBluetoothTypes
 
   var uuid: CBUUID
-  var service: Service
+  var service: Service?
   var properties = CBCharacteristicProperties()
   var value: Data?
   var descriptors: [CBDescriptor]?
