@@ -52,14 +52,6 @@ $ man vivtool
 
 The `vivtool` command requires macOS 11.0 (Big Sur) or later to run.  Choose one of the options for installation below.
 
-### Homebrew
-
-The `vivtool` command can be installed using [Homebrew](https://brew.sh/) with a custom tap:
-
-```sh
-brew install --HEAD p00ya/tap/vivtool
-```
-
 ### Github releases
 
 A precompiled binary can be downloaded from the github releases page.  To download, extract, and authorize the executable to run, run these commands:
