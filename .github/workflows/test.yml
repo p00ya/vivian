@@ -23,10 +23,10 @@ on:
 
 jobs:
   test:
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       matrix:
-        xcode: [ '/Applications/Xcode_13.2.1.app' ]
+        xcode: [ '/Applications/Xcode_13.3.1.app' ]
     env:
       DEVELOPER_DIR: ${{ matrix.xcode }}
     steps:
