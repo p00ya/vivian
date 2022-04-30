@@ -5,3 +5,6 @@
 !*.xcworkspace/contents.xcworkspacedata
 .DS_Store
 build
+.build
+.spm
+.swiftpm

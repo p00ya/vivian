@@ -61,7 +61,14 @@ jobs:
     - name: Lint
       run: |
         find viv -name '*.[h,m,mm]' -exec clang-format -n '{}' '+'
-        swift-format lint --recursive vivtool vivtoolTests
-    - name: Build and test
+        swift-format lint --recursive viv/Tests/VivSwiftTests
+        swift-format lint --recursive vivtool/Sources vivtool/Tests
+    - name: Test viv
       run: |
-        xcodebuild test -scheme vivtool -clonedSourcePackagesDirPath .spm -disableAutomaticPackageResolution
+        cd viv
+        swift test
+    - name: Build and test vivtool
+      run: |
+        cd vivtool
+        swift test
+        swift build -c release

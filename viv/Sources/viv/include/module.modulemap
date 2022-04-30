@@ -1,0 +1,41 @@
+// module.modulemap
+// Copyright 2022 Dean Scarff
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+module Viv {
+    config_macros __cplusplus, NDEBUG, DEBUG
+    header "viv/compat.h"
+    header "viv/directory_entry.h"
+    header "viv/manager_c_bridge.h"
+    header "viv/manager_error_code.h"
+    header "viv/manager_objc_bridge.h"
+    header "viv/packet.h"
+    header "viv/raw_directory.h"
+    header "viv/vivtime.h"
+    export *
+
+    module vivprivate {
+        requires cplusplus17
+        header "viv/burst.hpp"
+        header "viv/command.hpp"
+        header "viv/crc.hpp"
+        header "viv/directory.hpp"
+        header "viv/download_command.hpp"
+        header "viv/endian.hpp"
+        header "viv/erase_command.hpp"
+        header "viv/manager.hpp"
+        header "viv/set_time_command.hpp"
+        export *
+    }
+}

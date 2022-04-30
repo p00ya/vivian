@@ -75,15 +75,15 @@ install -p share/man/man1/vivtool.1 /usr/local/share/man/man1/
 
 ### Installation from source
 
-You can clone the git repository and build the project with Xcode.  It will require Xcode 12 to be installed (other Xcode versions may work but have not been tested).
+You can clone the git repository and build the project with Xcode.  It will require Swift 5.5 to be installed (other Swift versions may work but have not been tested).  Swift 5.5 in installed as part of Xcode 13.
 
 ```sh
 git clone https://github.com/p00ya/vivian.git
 cd vivian
-xcodebuild install -scheme vivtool -configuration Release DSTROOT=/usr/local
+./install.sh
 ```
 
-Xcode will install the executable and manual page in the `/usr/local` hierarchy if you have permission to write to that directory.  Alternatively, you can change the `DSTROOT` parameter to stage it elsewhere.
+Xcode will install the executable and manual page in the `/usr/local` hierarchy if you have permission to write to that directory.  Alternatively, you can set the `DSTROOT` environment variable when calling `install.sh` to stage it elsewhere.
 
 ## Technical Design
 
@@ -105,11 +105,13 @@ Currently the first two goals have been met, and the desktop app is on hold.
 
 ### Building
 
-The binaries can be built by opening `vivian.xcodeproj` and building from Xcode.  Alternatively, test and build from the command line:
+Test and build from the command line:
 
 ```sh
-xcodebuild test -scheme vivtool
-xcodebuild build -scheme vivtool -configuration Release
+cd vivtool
+swift package clean
+swift test
+swift build
 ```
 
 ### Overview
