@@ -27,7 +27,7 @@ let package = Package(
     .package(
       name: "swift-argument-parser",
       url: "https://github.com/apple/swift-argument-parser",
-      .upToNextMinor(from: "1.0.3")),
+      .upToNextMajor(from: "1.0.3")),
     .package(name: "viv", path: "../viv"),
   ],
   targets: [
