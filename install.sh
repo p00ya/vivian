@@ -26,5 +26,5 @@ cd vivtool
 swift build -c release
 test -d "${DSTROOT}/bin" || mkdir "${DSTROOT}/bin"
 test -d "${DSTROOT}/share/man/man1" || install -d "${DSTROOT}/share/man/man1"
-install "$(swift build -c release --show-bin-path)/vivtool" "${DSTROOT}/bin"
+install ".build/release/vivtool" "${DSTROOT}/bin"
 install -m 0644 vivtool.1 "${DSTROOT}/share/man/man1"
