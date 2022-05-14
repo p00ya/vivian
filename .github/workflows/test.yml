@@ -61,8 +61,8 @@ jobs:
     - name: Lint
       run: |
         find viv -name '*.[h,m,mm]' -exec clang-format -n '{}' '+'
-        swift-format lint --recursive viv/Tests/VivSwiftTests
-        swift-format lint --recursive vivtool/Sources vivtool/Tests
+        swift-format lint --recursive -s viv/Tests/VivSwiftTests
+        swift-format lint --recursive -s vivtool/Sources vivtool/Tests
     - name: Test viv
       run: |
         cd viv
