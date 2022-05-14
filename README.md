@@ -83,7 +83,7 @@ install -p share/man/man1/vivtool.1 /usr/local/share/man/man1/
 
 ### Installation from source
 
-You can clone the git repository and build the project with Xcode.  It will require Swift 5.5 to be installed (other Swift versions may work but have not been tested).  Swift 5.5 in installed as part of Xcode 13.
+You can clone the git repository and build the project with Swift.  It will require Swift 5.5 to be installed (other Swift versions may work but have not been tested).  Swift 5.5 in installed as part of Xcode 13.
 
 ```sh
 git clone https://github.com/p00ya/vivian.git
@@ -91,7 +91,7 @@ cd vivian
 ./install.sh
 ```
 
-Xcode will install the executable and manual page in the `/usr/local` hierarchy if you have permission to write to that directory.  Alternatively, you can set the `DSTROOT` environment variable when calling `install.sh` to stage it elsewhere.
+The `install.sh` script will install the executable and manual page in the `/usr/local` hierarchy if you have permission to write to that directory.  Alternatively, you can set the `DSTROOT` environment variable when calling `install.sh` to stage it elsewhere.
 
 ## Technical Design
 
