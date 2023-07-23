@@ -126,7 +126,7 @@ class BluetoothManagerTests: XCTestCase {
 }
 
 /// Cohesive set of fake types for CoreBluetooth.
-class FakeBluetoothTypes: BluetoothTyping {
+final class FakeBluetoothTypes: BluetoothTyping {
   typealias CentralManager = FakeCentralManager
   typealias Peripheral = FakePeripheral
   typealias Service = FakeService

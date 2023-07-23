@@ -40,7 +40,7 @@ public protocol BluetoothTyping {
 }
 
 /// Type bindings for CoreBluetooth classes.
-public class CoreBluetoothTypes: BluetoothTyping {
+public final class CoreBluetoothTypes: BluetoothTyping {
   /// `CBCentralManager`.
   public typealias CentralManager = CBCentralManager
 
