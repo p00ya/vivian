@@ -30,9 +30,9 @@ jobs:
     env:
       DEVELOPER_DIR: ${{ matrix.xcode }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Configure SPM cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: .spm
         key: spm-${{ runner.os }}-${{ matrix.xcode }}-${{ hashFiles('**/Package.resolved') }}
@@ -44,7 +44,7 @@ jobs:
         brew update --preinstall
         cat "$(brew --repository)/Library/Taps/homebrew/homebrew-core/Formula/"{clang,swift}-format.rb > .github/brew-formulae
     - name: Configure Homebrew cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # brew --cache
         path: |
