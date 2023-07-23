@@ -91,4 +91,16 @@ class State {
   ///
   /// This state is persisted between invocations, via UserDefaults.
   @Published var lastConnectedDevice: UUID?
+
+  /// Publisher of discovered peripherals.
+  ///
+  /// A value will be published whenever a new peripheral is discovered
+  /// during the scan command.
+  @Published var discoveredPeripheral: PeripheralSummary?
+}
+
+/// Information about a Bluetooth peripheral.
+struct PeripheralSummary {
+  var identifier: UUID
+  var name: String?
 }

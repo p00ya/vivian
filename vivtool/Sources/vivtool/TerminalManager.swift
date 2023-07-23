@@ -34,6 +34,8 @@ class TerminalManager<Stream: TextOutputStream> {
 
   private var destinationFile: URL?
 
+  private var justScanning = false
+
   private let store: Store
 
   private var standardOutput: Stream
@@ -86,6 +88,15 @@ class TerminalManager<Stream: TextOutputStream> {
         self?.renderDeletedFile(deletedFile.0, ok: deletedFile.1)
       }
       .store(in: &cancellable)
+
+    store.receive(\.$discoveredPeripheral)
+      .sink { [weak self] (peripheral) in
+        guard let self = self, let peripheral = peripheral else { return }
+        if self.justScanning {
+          self.renderPeripheral(peripheral)
+        }
+      }
+      .store(in: &cancellable)
   }
 
   /// Parses the command line arguments and runs commands.
@@ -94,42 +105,49 @@ class TerminalManager<Stream: TextOutputStream> {
       command = try VivtoolCommand.parseAsRoot()
 
       switch command {
-      case let list as VivtoolCommand.List:
-        updateFromCommonOptions(list.common)
+      case let scan as VivtoolCommand.Scan:
+        updateFromOptions(scan)
+        self.justScanning = true
         store.dispatch { (state) in
-          state.setFromOptions(list.common)
+          state.bluetoothCommandStack.append(.scan)
+        }
+        print("Scanning for peripherals... ^C to exit.\n", to: &standardOutput)
+      case let list as VivtoolCommand.List:
+        updateFromOptions(list)
+        store.dispatch { (state) in
+          state.setFromOptions(list)
           state.vivCommandQueue.append(.downloadDirectory)
         }
       case let copy as VivtoolCommand.Copy:
-        updateFromCommonOptions(copy.common)
+        updateFromOptions(copy)
         guard let index = parseIndex(from: copy.file) else {
           VivtoolCommand.exit(withError: TerminalError.invalidSourceFile(copy.file))
         }
         self.destinationFile = copy.destinationFile()
 
         store.dispatch { (state) in
-          state.setFromOptions(copy.common)
+          state.setFromOptions(copy)
           state.vivCommandQueue.append(.downloadFile(index: index))
         }
       case let delete as VivtoolCommand.Delete:
-        updateFromCommonOptions(delete.common)
+        updateFromOptions(delete)
         guard let index = parseIndex(from: delete.file) else {
           VivtoolCommand.exit(withError: TerminalError.invalidSourceFile(delete.file))
         }
 
         store.dispatch { (state) in
-          state.setFromOptions(delete.common)
+          state.setFromOptions(delete)
           state.vivCommandQueue.append(.deleteFile(index: index))
         }
       case let clock as VivtoolCommand.Clock:
-        updateFromCommonOptions(clock.common)
+        updateFromOptions(clock)
         var vivCommands = [VivCommand]()
         if let time = clock.parseTime() {
           vivCommands.append(.setTime(time))
         }
         vivCommands.append(.downloadDirectory)
         store.dispatch { (state) in
-          state.setFromOptions(clock.common)
+          state.setFromOptions(clock)
           state.vivCommandQueue.append(contentsOf: vivCommands)
         }
       default:
@@ -142,8 +160,8 @@ class TerminalManager<Stream: TextOutputStream> {
     }
   }
 
-  func updateFromCommonOptions(_ options: VivtoolCommand.CommonOptions) {
-    verbose = options.verbose
+  private func updateFromOptions(_ options: WithVerboseFlag) {
+    verbose = options.verbose.verbose
   }
 
   // MARK: Renderers
@@ -244,6 +262,10 @@ class TerminalManager<Stream: TextOutputStream> {
     }
   }
 
+  func renderPeripheral(_ peripheral: PeripheralSummary) {
+    print("\"\(peripheral.name ?? "")\" (\(peripheral.identifier))", to: &standardOutput)
+  }
+
   func terminate() {
     exit(store.state.exitStatus.rawValue)
   }
@@ -273,8 +295,8 @@ func parseIndex(from filename: String) -> UInt16? {
 }
 
 extension State {
-  fileprivate func setFromOptions(_ options: VivtoolCommand.CommonOptions) {
-    if let uuid = options.uuid {
+  fileprivate func setFromOptions(_ options: WithCommonOptions) {
+    if let uuid = options.uuid.uuid {
       deviceCriteria = .byUuid(uuid)
     } else if let uuid = lastConnectedDevice {
       deviceCriteria = .byUuidWithFallback(uuid)
@@ -287,15 +309,25 @@ struct VivtoolCommand: ParsableCommand {
   static let configuration = CommandConfiguration(
     commandName: "vivtool",
     abstract: "A utility for interacting with Viiiiva devices.",
-    subcommands: [List.self, Copy.self, Delete.self, Clock.self],
+    subcommands: [Scan.self, List.self, Copy.self, Delete.self, Clock.self],
     helpNames: [.long, .customShort("?")])
 }
 
+fileprivate protocol WithVerboseFlag {
+  var verbose: VivtoolCommand.VerboseFlag { get }
+}
+
+fileprivate protocol WithCommonOptions: WithVerboseFlag {
+  var uuid: VivtoolCommand.UuidOption { get }
+}
+
 extension VivtoolCommand {
-  struct CommonOptions: ParsableCommand {
+  struct VerboseFlag: ParsableCommand {
     @Flag(name: [.customShort("v"), .long], help: "Output extra information and warnings.")
     var verbose = false
+  }
 
+  struct UuidOption: ParsableCommand {
     @Option(help: "The device to connect to.", transform: Self.parseUUID)
     var uuid: UUID?
 
@@ -304,11 +336,19 @@ extension VivtoolCommand {
     }
   }
 
-  struct List: ParsableCommand {
+  struct Scan: ParsableCommand, WithVerboseFlag {
+    static let configuration = CommandConfiguration(
+      commandName: "scan", abstract: "Scan for BLE heart rate monitors.")
+
+    @OptionGroup var verbose: VerboseFlag
+  }
+
+  struct List: ParsableCommand, WithCommonOptions {
     static let configuration = CommandConfiguration(
       commandName: "ls", abstract: "List directory contents.")
 
-    @OptionGroup var common: CommonOptions
+    @OptionGroup var verbose: VerboseFlag
+    @OptionGroup var uuid: UuidOption
 
     @Flag(name: .customShort("l"), help: "Output table with size and time.")
     var longFormat = false
@@ -317,11 +357,12 @@ extension VivtoolCommand {
     var humanReadable = false
   }
 
-  struct Copy: ParsableCommand {
+  struct Copy: ParsableCommand, WithCommonOptions {
     static let configuration = CommandConfiguration(
       commandName: "cp", abstract: "Copy file.")
 
-    @OptionGroup var common: CommonOptions
+    @OptionGroup var verbose: VerboseFlag
+    @OptionGroup var uuid: UuidOption
 
     @Argument(help: "Viiiiva filename, e.g. \"0001.fit\".")
     var file: String
@@ -342,11 +383,12 @@ extension VivtoolCommand {
     }
   }
 
-  struct Delete: ParsableCommand {
+  struct Delete: ParsableCommand, WithCommonOptions {
     static let configuration = CommandConfiguration(
       commandName: "rm", abstract: "Delete file.")
 
-    @OptionGroup var common: CommonOptions
+    @OptionGroup var verbose: VerboseFlag
+    @OptionGroup var uuid: UuidOption
 
     @Argument(help: "Viiiiva filename, e.g. \"0001.fit\".")
     var file: String
@@ -358,11 +400,12 @@ extension VivtoolCommand {
     }
   }
 
-  struct Clock: ParsableCommand {
+  struct Clock: ParsableCommand, WithCommonOptions {
     static let configuration = CommandConfiguration(
       commandName: "date", abstract: "Print or set the device clock.")
 
-    @OptionGroup var common: CommonOptions
+    @OptionGroup var verbose: VerboseFlag
+    @OptionGroup var uuid: UuidOption
 
     @Flag(name: .customShort("h"), help: "Used localized time formats.")
     var humanReadable = false

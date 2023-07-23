@@ -87,6 +87,8 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
 
     // Dispatch commands to the corresponding methods.
     switch top {
+    case .scan:
+      self.scanForViiiiva()
     case .findPeripheral:
       self.findPeripheral()
     case .connectToPeripheral:
@@ -130,6 +132,9 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     //
     // Scanning continues until `didDiscoverVivaService` finds the Viiiiva
     // service.
+    //
+    // When this is called via the `scan` command rather than the
+    // `findPeripheral` command, scanning continues indefinitely.
     store.state.message = .verboseError("scanning for Viiiiva, make sure it's being worn...")
     centralManager.scanForPeripherals(withServices: [CBUUID.heartRateService], options: nil)
   }
@@ -141,7 +146,11 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
     guard !discoveredPeripherals.contains(where: { $0 === peripheral }) else { return }
 
     discoveredPeripherals.append(peripheral)
-    store.dispatch { $0.popCommand(.findPeripheral) }
+    let summary = PeripheralSummary(identifier: peripheral.identifier, name: peripheral.name)
+    store.dispatch { (state) in
+      state.discoveredPeripheral = summary
+      state.popCommand(.findPeripheral)
+    }
   }
 
   /// Registers the Viiiiva service and stops peripheral discovery.
@@ -475,6 +484,9 @@ public class BluetoothManager: GenericBluetoothManager<CoreBluetoothTypes>,
 
 /// Command model for the Bluetooth system.
 public enum BluetoothCommand: Equatable {
+  /// Scans for peripherals, without connecting.
+  case scan
+
   /// Looks for a device matching the criteria.
   case findPeripheral
 

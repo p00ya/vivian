@@ -46,6 +46,23 @@ class BluetoothManagerTests: XCTestCase {
     centralManager.peripherals.append(peripheral)
   }
 
+  func testScan() {
+    // The scan command will continue forever.
+    let publishedPeripheral = XCTestExpectation(description: "scan")
+    store.receive(\.$discoveredPeripheral)
+      .sink { [publishedPeripheral] (peripheral) in
+        guard peripheral != nil else { return }
+        publishedPeripheral.fulfill()
+      }
+      .store(in: &cancellable)
+    store.state.bluetoothCommandStack.append(.scan)
+    manager!
+      .centralManager(centralManager, didDiscover: peripheral!, advertisementData: [:], rssi: 80)
+
+    wait(for: [publishedPeripheral], timeout: Self.timeout)
+    XCTAssert(centralManager.isScanning)
+  }
+
   func testFindPeripheralWithScan() {
     store.state.deviceCriteria = .firstDiscovered
     store.state.bluetoothCommandStack.append(.findPeripheral)

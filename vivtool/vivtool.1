@@ -12,7 +12,7 @@
 .\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 .\" See the License for the specific language governing permissions and
 .\" limitations under the License.
-.Dd Oct 31, 2020
+.Dd Jul 23, 2023
 .Dt VIVTOOL 1
 .Sh NAME
 .Nm vivtool
@@ -20,6 +20,9 @@
 .Sh SYNOPSIS
 .Nm
 .Fl \-help
+.Nm
+.Cm scan
+.Op Fl v
 .Nm
 .Cm ls
 .Op Fl v
@@ -83,6 +86,16 @@ preferences).  If no previous UUID was recorded, or it cannot be found,
 .Nm
 runs a (slow) Bluetooth LE scan for heart rate monitors, and will connect
 to the first peripheral it discovers that supports the Viiiiva service.
+.El
+.Ss scan command
+.Nm
+.Cm scan
+.Op Fl v
+.Pp
+Performs a scan for Bluetooth LE heart rate monitors.  It will print their name
+and UUID.  This may include heart rate monitors other than Viiiiva devices.
+.Pp
+The cached UUID in user preferences is ignored for this command.
 .El
 .Ss ls command
 .Nm

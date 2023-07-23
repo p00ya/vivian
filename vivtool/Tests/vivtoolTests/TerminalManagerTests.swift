@@ -83,6 +83,14 @@ class TerminalManagerTests: XCTestCase {
     manager!.renderClock(1_577_836_800, withOptions: options)
     XCTAssertEqual(standardOutput.buffer, "2020-01-01T00:00:00Z\n")
   }
+
+  func testRenderPeripheral() throws {
+    let peripheral = PeripheralSummary(
+      identifier: UUID(uuidString: "A556FF53-8A57-43E1-AF96-64277025BEFB")!,
+      name: "Test")
+    manager!.renderPeripheral(peripheral)
+    XCTAssertEqual(standardOutput.buffer, "\"Test\" (A556FF53-8A57-43E1-AF96-64277025BEFB)\n")
+  }
 }
 
 class TerminalManagerStaticTests: XCTestCase {
