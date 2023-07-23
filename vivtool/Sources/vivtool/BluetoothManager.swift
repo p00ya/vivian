@@ -22,7 +22,7 @@ import CoreBluetooth
 /// bluetooth commands as necessary.
 ///
 /// Commands manage their own dependencies.  If a dependency is not present, a
-/// command will an additional command to fulfil that dependency.  That new
+/// command will push an additional command to fulfil the dependency.  That new
 /// command may have its own dependencies, which will be added when the stack
 /// is next observed.
 ///
@@ -124,7 +124,7 @@ public class GenericBluetoothManager<Bluetooth: BluetoothTyping>: NSObject {
   private func scanForViiiiva() {
     guard !centralManager.isScanning else { return }
 
-    // The Viiiiva won't respond to discovery for the non-standard Viiiiva
+    // The Viiiiva won't respond to discovery for the non-standard Viiiiva
     // service (identified by CBUUID.vivaService).  Look for the heart rate
     // monitor service instead, and then connect and perform service discovery.
     //

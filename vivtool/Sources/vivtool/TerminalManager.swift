@@ -1,4 +1,4 @@
-// Renderer.swift
+// TerminalManager.swift
 // Copyright 2020 Dean Scarff
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -402,7 +402,7 @@ extension VivtoolCommand {
 }
 
 enum TerminalMessage {
-  /// A message thath should be written to stderr.
+  /// A message that should be written to stderr.
   case error(String)
 
   /// A message that should only be written if the user requested verbose output.
